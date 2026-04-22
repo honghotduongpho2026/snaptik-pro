@@ -2,90 +2,90 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SnapTik - Tải Video TikTok Không Logo, Douyin & YouTube MP3</title>
-    <meta name="description" content="Tải video TikTok HD, YouTube 4K và chuyển đổi MP3 320kbps miễn phí. Không logo, chất lượng cao nhất.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SnapTik - Tải Video TikTok Không Logo & YouTube MP3 320kbps</title>
+    <meta name="description" content="Tải video TikTok HD, YouTube 4K và chuyển đổi MP3 chất lượng cao nhất. Miễn phí, không logo.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
-        body { font-family: 'Roboto', sans-serif; scroll-behavior: smooth; }
+        body { font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
         .hero-gradient { background: linear-gradient(90deg, #9333ea 0%, #db2777 100%); }
-        .btn-main { background-color: #db2777; transition: 0.3s; }
-        .btn-main:hover { background-color: #be185d; }
-        .dropdown-content { display: none; position: absolute; right: 0; top: 100%; z-index: 1000; background: white; border: 1px solid #eee; border-radius: 8px; }
+        .btn-main { background-color: #db2777; transition: all 0.2s ease; }
+        .dropdown-content { display: none; position: absolute; right: 0; top: 100%; z-index: 1000; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .group:hover .dropdown-content { display: block; }
-        #downloadFrame { display: none; }
+        /* Fix giật lag trên mobile bằng cách tắt các animation nặng */
+        .no-jitter { transform: translateZ(0); backface-visibility: hidden; }
     </style>
 </head>
-<body class="bg-gray-50">
-    <iframe id="downloadFrame"></iframe>
+<body class="bg-gray-50 text-gray-800">
 
-    <nav class="bg-white border-b px-6 py-4 flex justify-between items-center shadow-sm sticky top-0 z-50">
-        <h1 class="text-3xl font-black text-[#db2777] cursor-pointer" onclick="location.href='/'">SNAPTIK</h1>
-        <div class="hidden md:flex gap-6 font-medium text-gray-600">
+    <nav class="bg-white border-b px-4 py-3 flex justify-between items-center sticky top-0 z-50">
+        <h1 class="text-2xl font-black text-[#db2777] cursor-pointer" onclick="location.href='/'">SNAPTIK</h1>
+        <div class="hidden lg:flex gap-6 font-bold text-gray-600 text-sm">
             <a href="/" id="navHome">Trang chủ</a>
             <a href="javascript:void(0)" onclick="switchTab('tk')" id="navTk">Tải TikTok</a>
             <a href="javascript:void(0)" onclick="switchTab('dy')" id="navDy">Tải Douyin</a>
             <a href="javascript:void(0)" onclick="switchTab('yt')" id="navYt">YouTube MP3</a>
         </div>
         <div class="relative group">
-            <button class="flex items-center gap-2 border px-4 py-2 rounded-full hover:bg-gray-50">
-                <i class="fa-solid fa-globe text-blue-500"></i> <span id="langText">Tiếng Việt</span> <i class="fa-solid fa-chevron-down text-[10px]"></i>
+            <button class="flex items-center gap-2 border px-3 py-1.5 rounded-full text-sm font-bold">
+                <i class="fa-solid fa-globe text-blue-500"></i> <span id="langText">Tiếng Việt</span>
             </button>
-            <div class="dropdown-content w-36 overflow-hidden">
-                <button onclick="setLanguage('vi')" class="w-full text-left px-4 py-3 text-sm hover:bg-pink-50 border-b">Tiếng Việt</button>
-                <button onclick="setLanguage('en')" class="w-full text-left px-4 py-3 text-sm hover:bg-pink-50">English</button>
+            <div class="dropdown-content w-32 overflow-hidden border">
+                <button onclick="setLanguage('vi')" class="w-full text-left px-4 py-2 hover:bg-gray-50 border-b">Tiếng Việt</button>
+                <button onclick="setLanguage('en')" class="w-full text-left px-4 py-2 hover:bg-gray-50">English</button>
             </div>
         </div>
     </nav>
 
-    <section class="hero-gradient text-white text-center pt-16 pb-12 px-4">
+    <section class="hero-gradient text-white text-center py-12 px-4 no-jitter">
         <h2 class="text-3xl md:text-5xl font-black mb-4" id="heroTitle">Trình tải Video đa năng tốt nhất</h2>
-        <p class="text-lg opacity-90 mb-10" id="heroSub">Tải TikTok HD, YouTube 4K & MP3 320kbps</p>
-        <div class="max-w-4xl mx-auto flex h-14 bg-white rounded-md shadow-2xl overflow-hidden border-2 border-transparent focus-within:border-pink-300">
-            <input type="text" id="urlInput" placeholder="Dán link video vào đây..." class="flex-1 px-6 text-gray-800 outline-none">
-            <button onclick="analyzeVideo()" id="btnAnalyze" class="btn-main px-8 font-bold uppercase">TẢI XUỐNG</button>
+        <p class="text-base opacity-90 mb-8" id="heroSub">Tải TikTok HD, YouTube 4K & MP3 320kbps</p>
+        <div class="max-w-3xl mx-auto flex bg-white rounded-lg shadow-xl overflow-hidden">
+            <input type="text" id="urlInput" placeholder="Dán link video tại đây..." class="flex-1 px-4 text-gray-800 outline-none text-sm">
+            <button onclick="analyzeVideo()" id="btnAnalyze" class="btn-main px-6 py-4 font-bold text-sm">TẢI XUỐNG</button>
         </div>
     </section>
 
-    <div id="resultArea" class="hidden max-w-2xl mx-auto my-12 p-8 bg-white rounded-3xl shadow-2xl border border-pink-100 text-center">
-        <img id="vThumb" src="" class="w-48 mx-auto rounded-xl mb-6 shadow-md border-4 border-white">
-        <h3 id="vTitle" class="font-bold text-gray-800 mb-8 text-lg"></h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <button onclick="handleDownload('video')" class="bg-[#db2777] text-white py-4 rounded-xl font-bold shadow-lg">
+    <div id="resultArea" class="hidden max-w-xl mx-auto my-8 p-6 bg-white rounded-2xl shadow-lg text-center border">
+        <img id="vThumb" src="" class="w-40 mx-auto rounded-lg mb-4 shadow-sm">
+        <h3 id="vTitle" class="font-bold text-gray-700 mb-6 text-sm line-clamp-2"></h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button onclick="handleDownload('video')" class="bg-[#db2777] text-white py-3 rounded-lg font-bold text-sm">
                 <span id="vBtnText"><i class="fa-solid fa-video mr-2"></i>TẢI VIDEO MP4</span>
             </button>
-            <button onclick="handleDownload('mp3')" class="bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg">
+            <button onclick="handleDownload('mp3')" class="bg-blue-600 text-white py-3 rounded-lg font-bold text-sm">
                 <span id="aBtnText"><i class="fa-solid fa-music mr-2"></i>TẢI NHẠC MP3</span>
             </button>
         </div>
-        <p id="timerNote" class="hidden text-xs text-orange-600 mt-6 font-bold italic">Vui lòng đợi 5 giây để lấy file chất lượng cao nhất...</p>
+        <p id="timerNote" class="hidden text-xs text-orange-500 mt-4 font-medium italic">Đang tối ưu chất lượng, vui lòng chờ 5s...</p>
     </div>
 
-    <main class="max-w-5xl mx-auto px-6 py-16">
-        <div class="text-center mb-16">
-            <h2 class="text-3xl font-black mb-4 uppercase" id="seoMainTitle">SnapTik Pro - Công cụ tải video số 1</h2>
-            <div class="h-1 w-20 bg-pink-600 mx-auto"></div>
-        </div>
-        <div class="grid md:grid-cols-3 gap-10">
-            <div class="bg-white p-8 rounded-2xl shadow-sm border">
-                <i class="fa-solid fa-bolt text-4xl text-pink-600 mb-6"></i>
-                <h4 class="font-bold text-xl mb-4" id="seoT1">Tốc độ cực nhanh</h4>
-                <p class="text-sm text-gray-600" id="seoD1">Hệ thống máy chủ tối ưu giúp tải video HD trong vài giây.</p>
+    <main class="max-w-5xl mx-auto px-6 py-12">
+        <h2 class="text-2xl font-black text-center mb-10 uppercase" id="seoMainTitle">SnapTik Pro - Công cụ tải video số 1</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="text-center p-6 bg-white rounded-xl border border-gray-100">
+                <i class="fa-solid fa-bolt text-3xl text-pink-600 mb-4"></i>
+                <h4 class="font-bold mb-2" id="seoT1">Tốc độ cực nhanh</h4>
+                <p class="text-xs text-gray-500" id="seoD1">Hệ thống tối ưu giúp tải file chất lượng cao nhất chỉ trong vài giây.</p>
             </div>
-            <div class="bg-white p-8 rounded-2xl shadow-sm border">
-                <i class="fa-solid fa-wand-magic-sparkles text-4xl text-pink-600 mb-6"></i>
-                <h4 class="font-bold text-xl mb-4" id="seoT2">Xóa Logo tự động</h4>
-                <p class="text-sm text-gray-600" id="seoD2">Tự động xóa sạch logo và ID người dùng trên TikTok/Douyin.</p>
+            <div class="text-center p-6 bg-white rounded-xl border border-gray-100">
+                <i class="fa-solid fa-wand-magic-sparkles text-3xl text-pink-600 mb-4"></i>
+                <h4 class="font-bold mb-2" id="seoT2">Xóa Logo tự động</h4>
+                <p class="text-xs text-gray-500" id="seoD2">Tự động xóa sạch watermark và logo trên TikTok, Douyin.</p>
             </div>
-            <div class="bg-white p-8 rounded-2xl shadow-sm border">
-                <i class="fa-solid fa-music text-4xl text-pink-600 mb-6"></i>
-                <h4 class="font-bold text-xl mb-4" id="seoT3">Nhạc 320kbps</h4>
-                <p class="text-sm text-gray-600" id="seoD3">Tải nhạc YouTube/TikTok với chất lượng âm thanh tốt nhất.</p>
+            <div class="text-center p-6 bg-white rounded-xl border border-gray-100">
+                <i class="fa-solid fa-music text-3xl text-pink-600 mb-4"></i>
+                <h4 class="font-bold mb-2" id="seoT3">Nhạc 320kbps</h4>
+                <p class="text-xs text-gray-500" id="seoD3">Trích xuất âm thanh YouTube định dạng MP3 chất lượng phòng thu.</p>
             </div>
         </div>
     </main>
+
+    <footer class="py-8 text-center text-gray-400 text-xs border-t">
+        <p>© 2026 SnapTik Pro - Best Video Downloader Experience</p>
+    </footer>
 
     <script>
         let currentData = { video: "", audio: "", title: "" };
@@ -95,22 +95,16 @@
             vi: {
                 lang: "Tiếng Việt", home: "Trang chủ", tk: "Tải TikTok", dy: "Tải Douyin", yt: "YouTube MP3",
                 hTitle: "Trình tải Video đa năng tốt nhất", hSub: "Tải TikTok HD, YouTube 4K & MP3 320kbps",
-                placeholder: "Dán link video vào đây...", btnAnlz: "TẢI XUỐNG",
+                placeholder: "Dán link video tại đây...", btnAnlz: "TẢI XUỐNG",
                 vBtn: "<i class='fa-solid fa-video mr-2'></i>TẢI VIDEO MP4", aBtn: "<i class='fa-solid fa-music mr-2'></i>TẢI NHẠC MP3",
-                wait: "ĐANG XỬ LÝ", seoTitle: "SnapTik Pro - Công cụ tải video số 1",
-                t1: "Tốc độ cực nhanh", d1: "Hệ thống máy chủ tối ưu giúp tải video HD trong vài giây.",
-                t2: "Xóa Logo tự động", d2: "Tự động xóa sạch logo và ID người dùng trên TikTok/Douyin.",
-                t3: "Nhạc 320kbps", d3: "Tải nhạc YouTube/TikTok với chất lượng âm thanh tốt nhất."
+                wait: "ĐANG XỬ LÝ", seoTitle: "SnapTik Pro - Công cụ tải video số 1"
             },
             en: {
                 lang: "English", home: "Home", tk: "TikTok", dy: "Douyin", yt: "YouTube MP3",
                 hTitle: "Best Video Downloader", hSub: "Download TikTok HD, YouTube 4K & 320kbps MP3",
                 placeholder: "Paste link here...", btnAnlz: "DOWNLOAD",
                 vBtn: "<i class='fa-solid fa-video mr-2'></i>DOWNLOAD MP4", aBtn: "<i class='fa-solid fa-music mr-2'></i>DOWNLOAD MP3",
-                wait: "PROCESSING", seoTitle: "SnapTik Pro - #1 Video Downloader",
-                t1: "High Speed", d1: "Fast servers ensure HD downloads in seconds.",
-                t2: "Remove Watermark", d2: "Automatically clear TikTok and Douyin logos/watermarks.",
-                t3: "320kbps MP3", d3: "High-quality audio extraction for YouTube and TikTok."
+                wait: "PROCESSING", seoTitle: "SnapTik Pro - #1 Video Downloader"
             }
         };
 
@@ -127,9 +121,7 @@
             document.getElementById('urlInput').placeholder = d.placeholder;
             document.getElementById('btnAnalyze').innerText = d.btnAnlz;
             document.getElementById('seoMainTitle').innerText = d.seoTitle;
-            document.getElementById('seoT1').innerText = d.t1; document.getElementById('seoD1').innerText = d.d1;
-            document.getElementById('seoT2').innerText = d.t2; document.getElementById('seoD2').innerText = d.d2;
-            document.getElementById('seoT3').innerText = d.t3; document.getElementById('seoD3').innerText = d.d3;
+            
             if(!document.getElementById('resultArea').classList.contains('hidden')){
                 document.getElementById('vBtnText').innerHTML = d.vBtn;
                 document.getElementById('aBtnText').innerHTML = d.aBtn;
@@ -140,10 +132,9 @@
 
         function switchTab(type) {
             const input = document.getElementById('urlInput');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'auto' }); // Dùng 'auto' để tránh giật lag
             input.focus();
-            const d = langData[localStorage.getItem('lang') || 'vi'];
-            input.placeholder = (type === 'tk' ? d.tk : type === 'dy' ? d.dy : d.yt) + "...";
+            input.placeholder = langData[localStorage.getItem('lang') || 'vi'][type] + "...";
         }
 
         async function analyzeVideo() {
@@ -162,19 +153,19 @@
                 document.getElementById('vThumb').src = data.thumbnail || '';
                 document.getElementById('vTitle').innerText = data.title;
                 document.getElementById('resultArea').classList.remove('hidden');
-                document.getElementById('resultArea').scrollIntoView({behavior: 'smooth'});
+                document.getElementById('resultArea').scrollIntoView({behavior: 'auto'});
             } catch (e) { alert("Lỗi phân tích!"); }
             btn.innerText = langData[localStorage.getItem('lang') || 'vi'].btnAnlz;
         }
 
         function handleDownload(type) {
-            // Mở link Affiliate Shopee
+            // 1. Mở Affiliate Shopee ngay
             window.open(shopeeLink, '_blank');
             
-            document.getElementById('timerNote').classList.remove('hidden');
             const btnId = type === 'video' ? 'vBtnText' : 'aBtnText';
             const originalHTML = document.getElementById(btnId).innerHTML;
             let time = 5;
+            document.getElementById('timerNote').classList.remove('hidden');
 
             const timer = setInterval(() => {
                 const lang = localStorage.getItem('lang') || 'vi';
@@ -186,10 +177,16 @@
                     document.getElementById(btnId).innerHTML = originalHTML;
                     document.getElementById('timerNote').classList.add('hidden');
 
-                    const url = type === 'video' ? currentData.video : currentData.audio;
+                    const fileUrl = type === 'video' ? currentData.video : currentData.audio;
                     
-                    // CƠ CHẾ TỰ ĐỘNG TẢI QUA IFRAME (MẠNH NHẤT)
-                    document.getElementById('downloadFrame').src = url;
+                    // 2. Ép trình duyệt tự động tải xuống (Cách mượt nhất cho mobile)
+                    const a = document.createElement('a');
+                    a.href = fileUrl;
+                    a.target = '_self';
+                    a.setAttribute('download', ''); 
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => document.body.removeChild(a), 100);
                 }
             }, 1000);
         }
