@@ -1,47 +1,128 @@
-from flask import Flask, render_template, request, jsonify, Response
-from flask_cors import CORS
-import requests
-from yt_dlp import YoutubeDL
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapTik Pro - Tải Video TikTok Không Logo & YouTube 4K</title>
+    <meta name="description" content="Công cụ tải video TikTok không logo, tải video YouTube chất lượng cao miễn phí.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .hero-bg { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
+    </style>
+</head>
+<body>
+    <div class="hero-bg text-white pt-16 pb-24 px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-black mb-4">SnapTik <span class="text-yellow-400">Pro</span></h1>
+        <p class="text-blue-100 mb-8 opacity-90">Tải video đa nền tảng không dính Watermark</p>
+        
+        <div class="max-w-2xl mx-auto bg-white p-2 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-2">
+            <input type="text" id="urlInput" placeholder="Dán liên kết TikTok hoặc YouTube..." 
+                   class="flex-1 p-4 rounded-xl text-gray-800 outline-none">
+            <button onclick="analyzeVideo()" id="btnAnalyze" 
+                    class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-xl font-bold transition-all active:scale-95">
+                TẢI XUỐNG
+            </button>
+        </div>
+    </div>
 
-app = Flask(__name__)
-CORS(app)
+    <main class="max-w-4xl mx-auto -mt-12 px-4 pb-20">
+        <div id="resultArea" class="hidden bg-white rounded-3xl shadow-xl p-6 mb-10 border border-gray-100 text-center">
+            <img id="vThumb" src="" class="w-full max-w-sm mx-auto rounded-2xl mb-4 shadow-lg">
+            <h3 id="vTitle" class="font-bold text-gray-800 mb-6 px-4"></h3>
+            
+            <div class="max-w-xs mx-auto">
+                <button id="mainDownloadBtn" onclick="handleDownload()" 
+                        class="w-full bg-green-500 hover:bg-green-600 text-white py-5 rounded-2xl font-black text-lg shadow-xl">
+                    <span id="btnText">NHẤN ĐỂ TẢI NGAY</span>
+                </button>
+                <p id="timerNote" class="hidden text-[11px] text-red-500 mt-3 font-bold italic animate-pulse">
+                    Đang chuẩn bị file tải xuống, vui lòng chờ...
+                </p>
+            </div>
+        </div>
 
-TIKWM_API = "https://www.tikwm.com/api/"
+        <section class="grid md:grid-cols-2 gap-8 mb-12">
+            <div class="bg-white p-6 rounded-2xl shadow-sm">
+                <h4 class="font-bold text-blue-600 mb-2"><i class="fa-solid fa-check-double mr-2"></i>Không Logo</h4>
+                <p class="text-gray-500 text-sm">Công cụ tự động loại bỏ ID và Logo TikTok giúp video sạch hoàn toàn.</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm">
+                <h4 class="font-bold text-blue-600 mb-2"><i class="fa-solid fa-bolt mr-2"></i>Tốc độ cực nhanh</h4>
+                <p class="text-gray-500 text-sm">Hỗ trợ máy chủ tải tệp tốc độ cao cho cả mobile và máy tính.</p>
+            </div>
+        </section>
 
-def fix_url(path):
-    if not path: return ""
-    return path if path.startswith('http') else f"https://www.tikwm.com{path if path.startswith('/') else '/' + path}"
+        <section class="bg-white rounded-3xl p-8 shadow-sm">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">Câu hỏi thường gặp (FAQ)</h2>
+            <div class="space-y-6">
+                <div class="border-b pb-4">
+                    <p class="font-bold text-gray-700">Làm sao để tải video về điện thoại?</p>
+                    <p class="text-gray-500 text-sm">Chỉ cần dán link và đợi 6 giây, hệ thống sẽ tự động kích hoạt trình tải về của máy.</p>
+                </div>
+                <div class="border-b pb-4">
+                    <p class="font-bold text-gray-700">Web có thu phí không?</p>
+                    <p class="text-gray-500 text-sm">Hoàn toàn miễn phí 100% cho mọi người dùng.</p>
+                </div>
+            </div>
+        </section>
+    </main>
 
-@app.route('/download_file')
-def download_file():
-    url = request.args.get('url')
-    if not url: return "No URL", 400
-    try:
-        req = requests.get(url, stream=True, timeout=15)
-        return Response(req.iter_content(chunk_size=1024*1024), 
-                        content_type=req.headers.get('Content-Type'),
-                        headers={"Content-Disposition": "attachment; filename=video_snaptik.mp4"})
-    except: return "Error", 500
+    <footer class="text-center py-10 text-gray-400 text-xs">
+        <p>© 2026 SnapTik Pro - Affiliate Partner</p>
+    </footer>
 
-@app.route('/')
-def home():
-    return render_template('index.html')
+    <script>
+        let realVideoUrl = "";
+        const shopeeLink = "https://s.shopee.vn/60Nqx2YhkD";
 
-@app.route('/analyze', methods=['POST'])
-def analyze():
-    url = request.json.get('url', '')
-    try:
-        if "tiktok.com" in url or "douyin.com" in url:
-            data = requests.post(TIKWM_API, data={'url': url}).json()['data']
-            return jsonify({
-                'title': data.get('title', 'Video'),
-                'thumbnail': fix_url(data.get('cover', '')),
-                'video_url': fix_url(data.get('play', ''))
-            })
-        with YoutubeDL({'format': 'best', 'quiet': True}) as ydl:
-            info = ydl.extract_info(url, download=False)
-            return jsonify({'title': info['title'], 'thumbnail': info['thumbnail'], 'video_url': info['url']})
-    except: return jsonify({"error": "Lỗi link!"}), 400
+        async function analyzeVideo() {
+            const url = document.getElementById('urlInput').value;
+            if(!url) return alert("Dán link đã bạn ơi!");
+            const btn = document.getElementById('btnAnalyze');
+            btn.innerText = "...";
+            try {
+                const res = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({url})
+                });
+                const data = await res.json();
+                if(data.error) throw new Error(data.error);
 
-if __name__ == '__main__':
-    app.run(debug=True)
+                document.getElementById('vThumb').src = data.thumbnail;
+                document.getElementById('vTitle').innerText = data.title;
+                realVideoUrl = data.video_url;
+                document.getElementById('resultArea').classList.remove('hidden');
+                document.getElementById('resultArea').scrollIntoView({behavior: 'smooth'});
+            } catch (e) { alert(e.message); }
+            btn.innerText = "TẢI XUỐNG";
+        }
+
+        function handleDownload() {
+            window.open(shopeeLink, '_blank');
+            const dBtn = document.getElementById('mainDownloadBtn');
+            const dText = document.getElementById('btnText');
+            dBtn.disabled = true;
+            document.getElementById('timerNote').classList.remove('hidden');
+
+            let count = 6;
+            const timer = setInterval(() => {
+                dText.innerText = `ĐANG XỬ LÝ... ${count}S`;
+                count--;
+                if(count < 0) {
+                    clearInterval(timer);
+                    dText.innerText = "ĐANG TẢI XUỐNG...";
+                    window.location.href = `/download_file?url=${encodeURIComponent(realVideoUrl)}`;
+                    setTimeout(() => {
+                        dBtn.disabled = false;
+                        dText.innerText = "NHẤN ĐỂ TẢI LẠI";
+                    }, 3000);
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
