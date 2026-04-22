@@ -21,7 +21,6 @@ def analyze():
     url = request.json.get('url', '')
     if not url: return jsonify({"error": "No URL"}), 400
     try:
-        # TikTok / Douyin - Lấy bản HD không logo
         if "tiktok.com" in url or "douyin.com" in url:
             resp = requests.post(TIKWM_API, data={'url': url}, timeout=10).json()
             data = resp.get('data', {})
@@ -33,8 +32,8 @@ def analyze():
                     'music_url': fix_url(data.get('music', '')),
                 })
         
-        # YouTube - Lấy chất lượng cao nhất (Best format)
-        ydl_opts = {'quiet': True, 'noplaylist': True, 'format': 'bestvideo+bestaudio/best'}
+        # YouTube - Lấy Quality cao nhất
+        ydl_opts = {'quiet': True, 'noplaylist': True, 'format': 'best'}
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             audio_url = next((f['url'] for f in info['formats'] if f.get('acodec') != 'none' and f.get('vcodec') == 'none'), info['url'])
