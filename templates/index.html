@@ -3,114 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SnapTik - Tải video TikTok không logo/watermark miễn phí</title>
-    <meta name="description" content="SnapTik là công cụ tải video TikTok không logo tốt nhất hiện nay. Hỗ trợ tải video TikTok, Facebook, YouTube chất lượng cao, hoàn toàn miễn phí.">
-    <meta name="keywords" content="snaptik, tải video tiktok, tiktok downloader, không logo, watermark">
+    <title>SnapTik - Tải Video TikTok, Douyin Không Logo & MP3 YouTube</title>
+    <meta name="description" content="SnapTik hỗ trợ tải video TikTok không logo, Douyin, YouTube 4K và chuyển đổi MP3 chất lượng cao miễn phí.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
-        body { font-family: 'Roboto', sans-serif; background-color: #ffffff; }
-        .nav-link { color: #4b5563; font-weight: 500; font-size: 14px; transition: 0.3s; }
-        .nav-link:hover { color: #db2777; }
-        .hero-section { background: linear-gradient(90deg, #9333ea 0%, #db2777 100%); }
-        .input-box { border-radius: 4px 0 0 4px; }
-        .btn-download { border-radius: 0 4px 4px 0; background-color: #db2777; transition: 0.3s; }
-        .btn-download:hover { background-color: #be185d; }
-        .footer-link { color: #6b7280; font-size: 13px; }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+        body { font-family: 'Roboto', sans-serif; }
+        .hero-gradient { background: linear-gradient(90deg, #9333ea 0%, #db2777 100%); }
+        .btn-main { background-color: #db2777; transition: 0.3s; }
+        .btn-main:hover { background-color: #be185d; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <nav class="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
-        <div class="flex items-center gap-12">
-            <h1 class="text-3xl font-black text-[#db2777] tracking-tighter">SNAPTIK</h1>
-            <div class="hidden md:flex gap-6">
-                <a href="#" class="nav-link">Home</a>
-                <div class="relative group">
-                    <button class="nav-link flex items-center gap-1">Mẹo TikTok <i class="fa-solid fa-chevron-down text-[10px]"></i></button>
-                </div>
-                <a href="#" class="nav-link">Tải Facebook</a>
-                <a href="#" class="nav-link">Tải YouTube</a>
-                <a href="#" class="nav-link">Nền tảng khác</a>
-            </div>
+    <nav class="bg-white border-b px-6 py-4 flex justify-between items-center shadow-sm">
+        <h1 class="text-3xl font-black text-[#db2777]">SNAPTIK</h1>
+        <div class="hidden md:flex gap-6 font-medium text-gray-600 text-sm">
+            <a href="#" class="hover:text-pink-600">Home</a>
+            <a href="#" class="hover:text-pink-600">TikTok Downloader</a>
+            <a href="#" class="hover:text-pink-600">Douyin Downloader</a>
+            <a href="#" class="hover:text-pink-600">YouTube to MP3</a>
         </div>
-        <div class="flex items-center gap-2 text-blue-500 font-medium text-sm cursor-pointer">
-            <img src="https://flagcdn.com/w20/vn.png" class="w-5 h-3 object-cover" alt="VN">
-            Tiếng Việt <i class="fa-solid fa-chevron-down text-[10px]"></i>
-        </div>
+        <div class="text-blue-500 font-bold text-sm">Tiếng Việt <i class="fa-solid fa-chevron-down ml-1"></i></div>
     </nav>
 
-    <section class="hero-section text-white text-center pt-16 pb-12 px-4">
-        <h2 class="text-3xl md:text-5xl font-black mb-4">Snaptik – Tải video Tiktok không watermark</h2>
-        <p class="text-lg opacity-90 mb-10">SnapTik - Web tải video Tiktok tốt nhất trên thế giới</p>
+    <section class="hero-gradient text-white text-center pt-16 pb-12 px-4">
+        <h2 class="text-3xl md:text-5xl font-black mb-4">Trình tải Video đa năng tốt nhất</h2>
+        <p class="text-lg opacity-90 mb-10">Tải TikTok, Douyin, YouTube không watermark & MP3 320kbps</p>
 
-        <div class="max-w-4xl mx-auto flex h-14 shadow-2xl">
-            <input type="text" id="urlInput" placeholder="Dán link TikTok vào đây..." 
-                   class="flex-1 px-6 text-gray-800 outline-none input-box text-sm md:text-base">
-            <button onclick="analyzeVideo()" id="btnAnalyze" class="btn-download px-10 font-black text-sm md:text-base uppercase">
-                Tải xuống
-            </button>
+        <div class="max-w-4xl mx-auto flex h-14 bg-white rounded-md shadow-2xl overflow-hidden">
+            <input type="text" id="urlInput" placeholder="Dán link video TikTok, Douyin hoặc YouTube..." 
+                   class="flex-1 px-6 text-gray-800 outline-none text-sm md:text-base">
+            <button onclick="analyzeVideo()" id="btnAnalyze" class="btn-main px-8 font-bold uppercase">Tải xuống</button>
         </div>
 
-        <div class="mt-16 flex justify-center gap-4">
-            <img src="https://static.snaptik.app/images/app_download_vi.png" class="w-full max-w-2xl" alt="Preview">
+        <div class="mt-12 flex justify-center">
+            <img src="https://static.snaptik.app/images/app_download_vi.png" class="max-w-full md:max-w-xl" alt="UI Preview">
         </div>
     </section>
 
-    <div id="resultArea" class="hidden max-w-3xl mx-auto my-12 p-6 bg-gray-50 rounded-xl border border-dashed border-pink-300 text-center">
-        <img id="vThumb" src="" class="w-48 mx-auto rounded-lg mb-4 shadow-lg border-2 border-white">
-        <h3 id="vTitle" class="font-bold text-gray-700 mb-6 px-4 truncate"></h3>
+    <div id="resultArea" class="hidden max-w-2xl mx-auto my-12 p-8 bg-white rounded-3xl shadow-2xl border border-pink-100 text-center">
+        <img id="vThumb" src="" class="w-48 mx-auto rounded-xl mb-6 shadow-md border-4 border-white">
+        <h3 id="vTitle" class="font-bold text-gray-800 mb-8 px-4 text-lg"></h3>
         
-        <div class="max-w-xs mx-auto">
-            <button id="mainDownloadBtn" onclick="handleDownload()" 
-                    class="w-full bg-[#db2777] hover:bg-[#be185d] text-white py-4 rounded font-bold text-lg transition-all shadow-lg active:scale-95">
-                <span id="btnText">DOWNLOAD VIDEO</span>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button onclick="startDownload('video')" class="bg-[#db2777] text-white py-4 rounded-xl font-bold flex flex-col items-center gap-1 shadow-lg hover:bg-pink-700 transition">
+                <span id="videoBtnText"><i class="fa-solid fa-video mr-2"></i>TẢI VIDEO MP4</span>
             </button>
-            <p id="timerNote" class="hidden text-xs text-red-500 mt-4 font-bold italic animate-pulse">
-                Hệ thống đang nén video, vui lòng không đóng trình duyệt...
-            </p>
+            <button onclick="startDownload('mp3')" class="bg-blue-600 text-white py-4 rounded-xl font-bold flex flex-col items-center gap-1 shadow-lg hover:bg-blue-700 transition">
+                <span id="audioBtnText"><i class="fa-solid fa-music mr-2"></i>TẢI NHẠC MP3</span>
+            </button>
         </div>
+        <p id="timerNote" class="hidden text-xs text-orange-600 mt-6 font-bold italic animate-pulse">
+            Đang tối ưu chất lượng HD/320kbps, vui lòng chờ trong giây lát...
+        </p>
     </div>
 
-    <main class="max-w-4xl mx-auto px-6 py-16 text-gray-600 leading-relaxed">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Cách tải video TikTok không logo với SnapTik</h2>
-        <p class="mb-4 text-sm md:text-base">SnapTik.app là một trong những trình tải video TikTok tốt nhất hiện nay để tải video TikTok không có logo. Bạn không cần phải cài đặt bất kỳ phần mềm nào trên máy tính hoặc điện thoại di động, tất cả những gì bạn cần là một liên kết video TikTok và quá trình xử lý được thực hiện ở phía máy chủ của chúng tôi.</p>
-        
-        <div class="grid md:grid-cols-3 gap-8 mt-12">
-            <div>
-                <h4 class="font-bold text-gray-800 mb-2">Tải video TikTok HD</h4>
-                <p class="text-sm">Hỗ trợ tải xuống video với chất lượng gốc, định dạng MP4 rõ nét.</p>
+    <main class="max-w-4xl mx-auto px-6 py-16 text-gray-700">
+        <h3 class="text-2xl font-black mb-6 text-center text-gray-900 uppercase">Tại sao nên dùng SnapTik Pro?</h3>
+        <div class="grid md:grid-cols-3 gap-10">
+            <div class="text-center">
+                <div class="text-pink-600 text-4xl mb-4"><i class="fa-solid fa-layer-group"></i></div>
+                <h4 class="font-bold mb-2">Đa nền tảng</h4>
+                <p class="text-sm">Hỗ trợ TikTok, Douyin (TikTok Trung Quốc), YouTube, Facebook và nhiều hơn thế.</p>
             </div>
-            <div>
-                <h4 class="font-bold text-gray-800 mb-2">Không Watermark</h4>
-                <p class="text-sm">Xóa hoàn toàn logo và ID người dùng dính trên video một cách sạch sẽ.</p>
+            <div class="text-center">
+                <div class="text-pink-600 text-4xl mb-4"><i class="fa-solid fa-star"></i></div>
+                <h4 class="font-bold mb-2">Chất lượng cao</h4>
+                <p class="text-sm">Tải video định dạng HD và âm thanh MP3 320kbps sạch hoàn toàn logo.</p>
             </div>
-            <div>
-                <h4 class="font-bold text-gray-800 mb-2">Hỗ trợ mọi thiết bị</h4>
-                <p class="text-sm">Sử dụng mượt mà trên iPhone, Android, PC và máy tính bảng.</p>
+            <div class="text-center">
+                <div class="text-pink-600 text-4xl mb-4"><i class="fa-solid fa-shield-halved"></i></div>
+                <h4 class="font-bold mb-2">An toàn tuyệt đối</h4>
+                <p class="text-sm">Không cần cài đặt ứng dụng, tải trực tiếp trên trình duyệt của bạn.</p>
             </div>
         </div>
     </main>
 
-    <footer class="bg-gray-50 border-t border-gray-100 py-10 text-center">
-        <div class="flex justify-center gap-6 mb-4">
-            <a href="#" class="footer-link">Điều khoản dịch vụ</a>
-            <a href="#" class="footer-link">Chính sách bảo mật</a>
-            <a href="#" class="footer-link">Liên hệ</a>
-        </div>
-        <p class="text-xs text-gray-400">© 2026 SnapTik Pro. All rights reserved.</p>
+    <footer class="bg-gray-100 py-12 text-center text-gray-500 text-sm border-t">
+        <p class="mb-4 font-bold">SnapTik - Trình tải Video chuyên nghiệp</p>
+        <p class="px-6">Lưu ý: Chúng tôi tôn trọng bản quyền, vui lòng không sử dụng video cho mục đích thương mại khi chưa có sự đồng ý.</p>
     </footer>
 
     <script>
-        let realVideoUrl = "";
+        let currentData = { video: "", audio: "", title: "" };
         const shopeeLink = "https://s.shopee.vn/60Nqx2YhkD";
 
         async function analyzeVideo() {
             const url = document.getElementById('urlInput').value;
-            if(!url) return alert("Vui lòng dán link video!");
+            if(!url) return alert("Vui lòng dán liên kết!");
             const btn = document.getElementById('btnAnalyze');
-            btn.innerText = "...";
+            btn.innerText = "ĐANG QUÉT...";
             try {
                 const res = await fetch('/analyze', {
                     method: 'POST',
@@ -118,36 +103,38 @@
                     body: JSON.stringify({url})
                 });
                 const data = await res.json();
-                if(data.error) throw new Error(data.error);
+                if(data.error) throw new Error();
 
+                currentData = { video: data.video_url, audio: data.music_url, title: data.title };
                 document.getElementById('vThumb').src = data.thumbnail;
                 document.getElementById('vTitle').innerText = data.title;
-                realVideoUrl = data.video_url;
                 document.getElementById('resultArea').classList.remove('hidden');
                 document.getElementById('resultArea').scrollIntoView({behavior: 'smooth'});
-            } catch (e) { alert("Link không hợp lệ hoặc lỗi máy chủ!"); }
+            } catch (e) { alert("Lỗi: Không tìm thấy video hoặc link không hỗ trợ!"); }
             btn.innerText = "TẢI XUỐNG";
         }
 
-        function handleDownload() {
-            window.open(shopeeLink, '_blank');
-            const dBtn = document.getElementById('mainDownloadBtn');
-            const dText = document.getElementById('btnText');
-            dBtn.disabled = true;
-            document.getElementById('timerNote').classList.remove('hidden');
+        function startDownload(type) {
+            window.open(shopeeLink, '_blank'); // Mở Shopee
+            const note = document.getElementById('timerNote');
+            note.classList.remove('hidden');
+            
+            let time = 5;
+            const btnTextId = type === 'video' ? 'videoBtnText' : 'audioBtnText';
+            const originalText = document.getElementById(btnTextId).innerHTML;
 
-            let count = 5;
             const timer = setInterval(() => {
-                dText.innerText = `READY IN ${count}S...`;
-                count--;
-                if(count < 0) {
+                document.getElementById(btnTextId).innerText = `CHỜ ${time}S...`;
+                time--;
+                if(time < 0) {
                     clearInterval(timer);
-                    dText.innerText = "STARTING DOWNLOAD...";
-                    window.location.href = `/download_file?url=${encodeURIComponent(realVideoUrl)}`;
-                    setTimeout(() => {
-                        dBtn.disabled = false;
-                        dText.innerText = "RE-DOWNLOAD";
-                    }, 3000);
+                    document.getElementById(btnTextId).innerHTML = originalText;
+                    const finalUrl = type === 'video' ? currentData.video : currentData.audio;
+                    const ext = type === 'video' ? '.mp4' : '.mp3';
+                    const filename = encodeURIComponent(currentData.title.substring(0, 20) + ext);
+                    
+                    // Thực hiện tải xuống tự động qua server
+                    window.location.href = `/download_file?url=${encodeURIComponent(finalUrl)}&name=${filename}`;
                 }
             }, 1000);
         }
