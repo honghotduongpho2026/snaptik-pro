@@ -15,13 +15,15 @@ def fix_url(path):
 @app.route('/download_file')
 def download_file():
     url = request.args.get('url')
-    filename = request.args.get('name', 'video_snaptik.mp4')
+    name = request.args.get('name', 'file_snaptik')
     if not url: return "Missing URL", 400
     try:
-        req = requests.get(url, stream=True, timeout=30)
+        # Giả lập trình duyệt để tránh bị chặn khi tải file
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+        req = requests.get(url, stream=True, timeout=30, headers=headers)
         return Response(req.iter_content(chunk_size=1024*1024), 
                         content_type=req.headers.get('Content-Type'),
-                        headers={"Content-Disposition": f"attachment; filename={filename}"})
+                        headers={"Content-Disposition": f"attachment; filename={name}"})
     except: return "Download Error", 500
 
 @app.route('/')
@@ -32,34 +34,24 @@ def home():
 def analyze():
     url = request.json.get('url', '')
     try:
-        # Xử lý TikTok & Douyin qua TikWM
         if "tiktok.com" in url or "douyin.com" in url:
             resp = requests.post(TIKWM_API, data={'url': url}).json()
-            data = resp['data']
+            data = resp.get('data', {})
             return jsonify({
-                'title': data.get('title', 'Video TikTok/Douyin'),
+                'title': data.get('title', 'Video Media'),
                 'thumbnail': fix_url(data.get('cover', '')),
                 'video_url': fix_url(data.get('play', '')),
                 'music_url': fix_url(data.get('music', '')),
-                'platform': 'tiktok'
             })
         
-        # Xử lý YouTube & các nền tảng khác qua yt-dlp
-        ydl_opts = {
-            'format': 'bestvideo+bestaudio/best',
-            'quiet': True,
-            'noplaylist': True
-        }
-        with YoutubeDL(ydl_opts) as ydl:
+        with YoutubeDL({'quiet': True, 'noplaylist': True}) as ydl:
             info = ydl.extract_info(url, download=False)
-            # Tìm link audio riêng nếu có
             audio_url = next((f['url'] for f in info['formats'] if f.get('acodec') != 'none' and f.get('vcodec') == 'none'), info['url'])
             return jsonify({
-                'title': info.get('title', 'Video Youtube'),
+                'title': info.get('title', 'Video Media'),
                 'thumbnail': info.get('thumbnail', ''),
                 'video_url': info.get('url', ''),
-                'music_url': audio_url,
-                'platform': 'youtube'
+                'music_url': audio_url
             })
     except Exception as e:
         return jsonify({"error": str(e)}), 400
