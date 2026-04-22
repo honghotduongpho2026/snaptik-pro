@@ -1,60 +1,230 @@
-from flask import Flask, render_template, request, jsonify, Response
-from flask_cors import CORS
-import requests
-from yt_dlp import YoutubeDL
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapTik - Tải Video TikTok Không Logo, Douyin & YouTube MP3</title>
+    <meta name="description" content="SnapTik hỗ trợ tải video TikTok không logo, Douyin, YouTube 4K và chuyển đổi MP3 chất lượng cao 320kbps miễn phí. Công cụ tải video đa năng tốt nhất.">
+    <meta name="keywords" content="snaptik, tải video tiktok, tiktok downloader, tải nhạc youtube, douyin downloader, tải video không logo">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+        body { font-family: 'Roboto', sans-serif; scroll-behavior: smooth; }
+        .hero-gradient { background: linear-gradient(90deg, #9333ea 0%, #db2777 100%); }
+        .btn-main { background-color: #db2777; transition: 0.3s; }
+        .btn-main:hover { background-color: #be185d; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
 
-app = Flask(__name__)
-CORS(app)
-
-TIKWM_API = "https://www.tikwm.com/api/"
-
-def fix_url(path):
-    if not path: return ""
-    return path if path.startswith('http') else f"https://www.tikwm.com{path if path.startswith('/') else '/' + path}"
-
-@app.route('/download_file')
-def download_file():
-    url = request.args.get('url')
-    name = request.args.get('name', 'file_snaptik')
-    if not url: return "Missing URL", 400
-    try:
-        # Giả lập trình duyệt để tránh bị chặn khi tải file
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
-        req = requests.get(url, stream=True, timeout=30, headers=headers)
-        return Response(req.iter_content(chunk_size=1024*1024), 
-                        content_type=req.headers.get('Content-Type'),
-                        headers={"Content-Disposition": f"attachment; filename={name}"})
-    except: return "Download Error", 500
-
-@app.route('/')
-def home():
-    return render_template('index.html')
-
-@app.route('/analyze', methods=['POST'])
-def analyze():
-    url = request.json.get('url', '')
-    try:
-        if "tiktok.com" in url or "douyin.com" in url:
-            resp = requests.post(TIKWM_API, data={'url': url}).json()
-            data = resp.get('data', {})
-            return jsonify({
-                'title': data.get('title', 'Video Media'),
-                'thumbnail': fix_url(data.get('cover', '')),
-                'video_url': fix_url(data.get('play', '')),
-                'music_url': fix_url(data.get('music', '')),
-            })
+    <nav class="bg-white border-b px-6 py-4 flex justify-between items-center shadow-sm sticky top-0 z-50">
+        <h1 class="text-3xl font-black text-[#db2777] cursor-pointer" onclick="location.href='/'">SNAPTIK</h1>
+        <div class="hidden md:flex gap-6 font-medium text-gray-600 text-sm">
+            <a href="/" class="hover:text-pink-600 nav-item" data-key="home">Trang chủ</a>
+            <a href="javascript:void(0)" onclick="focusInput()" class="hover:text-pink-600 nav-item" data-key="tk">Tải TikTok</a>
+            <a href="javascript:void(0)" onclick="focusInput()" class="hover:text-pink-600 nav-item" data-key="dy">Tải Douyin</a>
+            <a href="javascript:void(0)" onclick="focusInput()" class="hover:text-pink-600 nav-item" data-key="yt">YouTube MP3</a>
+        </div>
         
-        with YoutubeDL({'quiet': True, 'noplaylist': True}) as ydl:
-            info = ydl.extract_info(url, download=False)
-            audio_url = next((f['url'] for f in info['formats'] if f.get('acodec') != 'none' and f.get('vcodec') == 'none'), info['url'])
-            return jsonify({
-                'title': info.get('title', 'Video Media'),
-                'thumbnail': info.get('thumbnail', ''),
-                'video_url': info.get('url', ''),
-                'music_url': audio_url
-            })
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        <div class="relative group">
+            <button class="flex items-center gap-2 text-gray-700 font-bold text-sm border px-3 py-1 rounded-full hover:bg-gray-50 transition">
+                <i class="fa-solid fa-globe text-blue-500"></i> <span id="langText">Tiếng Việt</span> <i class="fa-solid fa-chevron-down text-[10px]"></i>
+            </button>
+            <div class="absolute right-0 mt-2 w-36 bg-white border rounded shadow-xl hidden group-hover:block overflow-hidden z-[100]">
+                <button onclick="setLanguage('vi')" class="w-full text-left px-4 py-3 text-sm hover:bg-pink-50 border-b">Tiếng Việt</button>
+                <button onclick="setLanguage('en')" class="w-full text-left px-4 py-3 text-sm hover:bg-pink-50">English</button>
+            </div>
+        </div>
+    </nav>
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    <section class="hero-gradient text-white text-center pt-16 pb-12 px-4">
+        <h2 class="text-3xl md:text-5xl font-black mb-4" id="heroTitle">Trình tải Video đa năng tốt nhất</h2>
+        <p class="text-lg opacity-90 mb-10" id="heroSub">Tải TikTok, Douyin, YouTube không watermark & MP3 320kbps</p>
+
+        <div class="max-w-4xl mx-auto flex h-14 bg-white rounded-md shadow-2xl overflow-hidden border-2 border-transparent focus-within:border-pink-300">
+            <input type="text" id="urlInput" placeholder="Dán link video TikTok, Douyin hoặc YouTube..." 
+                   class="flex-1 px-6 text-gray-800 outline-none text-sm md:text-base">
+            <button onclick="analyzeVideo()" id="btnAnalyze" class="btn-main px-8 font-bold uppercase">TẢI XUỐNG</button>
+        </div>
+
+        <div class="mt-12 flex justify-center">
+            <img src="https://static.snaptik.app/images/app_download_vi.png" id="uiPreviewImg" 
+                 onerror="this.src='https://snaptik.app/images/app_download_en.png'"
+                 class="max-w-full md:max-w-xl drop-shadow-2xl" alt="SnapTik UI Preview">
+        </div>
+    </section>
+
+    <div id="resultArea" class="hidden max-w-2xl mx-auto my-12 p-8 bg-white rounded-3xl shadow-2xl border border-pink-100 text-center">
+        <img id="vThumb" src="" class="w-48 mx-auto rounded-xl mb-6 shadow-md border-4 border-white">
+        <h3 id="vTitle" class="font-bold text-gray-800 mb-8 px-4 text-lg"></h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button onclick="startDownload('video')" class="bg-[#db2777] text-white py-4 rounded-xl font-bold flex flex-col items-center gap-1 shadow-lg hover:bg-pink-700 transition">
+                <span id="videoBtnText"><i class="fa-solid fa-video mr-2"></i>TẢI VIDEO MP4</span>
+            </button>
+            <button onclick="startDownload('mp3')" class="bg-blue-600 text-white py-4 rounded-xl font-bold flex flex-col items-center gap-1 shadow-lg hover:bg-blue-700 transition">
+                <span id="audioBtnText"><i class="fa-solid fa-music mr-2"></i>TẢI NHẠC MP3</span>
+            </button>
+        </div>
+        <p id="timerNote" class="hidden text-xs text-orange-600 mt-6 font-bold italic animate-pulse">
+            Đang xử lý chất lượng cao nhất, vui lòng chờ...
+        </p>
+    </div>
+
+    <main class="max-w-5xl mx-auto px-6 py-16">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-black mb-4 uppercase" id="seoMainTitle">SnapTik Pro - Công cụ tải video số 1</h2>
+            <div class="h-1 w-20 bg-pink-600 mx-auto"></div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-10">
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                <i class="fa-solid fa-bolt text-4xl text-pink-600 mb-6"></i>
+                <h4 class="font-bold text-xl mb-4" id="seoT1">Tốc độ cực nhanh</h4>
+                <p class="text-sm text-gray-600 leading-relaxed" id="seoD1">Hệ thống máy chủ tối ưu giúp bạn tải video TikTok, YouTube chỉ trong vài giây với chất lượng HD tốt nhất.</p>
+            </div>
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                <i class="fa-solid fa-wand-magic-sparkles text-4xl text-pink-600 mb-6"></i>
+                <h4 class="font-bold text-xl mb-4" id="seoT2">Xóa Logo tự động</h4>
+                <p class="text-sm text-gray-600 leading-relaxed" id="seoD2">Tự động loại bỏ hoàn toàn logo, ID và watermark trên video TikTok và Douyin một cách chuyên nghiệp.</p>
+            </div>
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                <i class="fa-solid fa-music text-4xl text-pink-600 mb-6"></i>
+                <h4 class="font-bold text-xl mb-4" id="seoT3">Chất lượng MP3 320kbps</h4>
+                <p class="text-sm text-gray-600 leading-relaxed" id="seoD3">Chuyển đổi video YouTube sang định dạng MP3 chất lượng cao nhất để thưởng thức âm nhạc ngoại tuyến.</p>
+            </div>
+        </div>
+        
+        <article class="mt-16 bg-pink-50 p-10 rounded-3xl border border-pink-100">
+            <h3 class="text-2xl font-bold mb-6 text-pink-800" id="seoArticleTitle">Hướng dẫn tải video tại SnapTik</h3>
+            <ul class="space-y-4 text-gray-700">
+                <li class="flex gap-4">
+                    <span class="bg-pink-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">1</span>
+                    <span id="step1">Sao chép liên kết video từ ứng dụng TikTok hoặc YouTube.</span>
+                </li>
+                <li class="flex gap-4">
+                    <span class="bg-pink-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">2</span>
+                    <span id="step2">Dán liên kết vào ô nhập liệu ở phía trên của trang web SnapTik.</span>
+                </li>
+                <li class="flex gap-4">
+                    <span class="bg-pink-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">3</span>
+                    <span id="step3">Nhấn nút 'Tải xuống', chờ 5 giây để chúng tôi xử lý và lưu file về thiết bị của bạn.</span>
+                </li>
+            </ul>
+        </article>
+    </main>
+
+    <footer class="bg-white border-t py-12 text-center text-gray-400 text-sm">
+        <p>© 2026 SnapTik Pro - Made with ❤️ for Content Creators</p>
+    </footer>
+
+    <script>
+        let currentData = { video: "", audio: "", title: "" };
+        const shopeeLink = "https://s.shopee.vn/60Nqx2YhkD";
+
+        const langData = {
+            vi: {
+                lang: "Tiếng Việt", home: "Trang chủ", tk: "Tải TikTok", dy: "Tải Douyin", yt: "YouTube MP3",
+                hTitle: "Trình tải Video đa năng tốt nhất", hSub: "Tải TikTok, Douyin, YouTube không watermark & MP3 320kbps",
+                placeholder: "Dán link video TikTok, Douyin hoặc YouTube...", btnAnlz: "TẢI XUỐNG",
+                vBtn: "<i class='fa-solid fa-video mr-2'></i>TẢI VIDEO MP4", aBtn: "<i class='fa-solid fa-music mr-2'></i>TẢI NHẠC MP3",
+                wait: "CHỜ",
+                seoTitle: "SnapTik Pro - Công cụ tải video số 1",
+                seoT1: "Tốc độ cực nhanh", seoD1: "Hệ thống máy chủ tối ưu giúp bạn tải video TikTok, YouTube chỉ trong vài giây.",
+                seoT2: "Xóa Logo tự động", seoD2: "Tự động loại bỏ logo, ID trên video TikTok và Douyin chuyên nghiệp.",
+                seoT3: "Nhạc MP3 320kbps", seoD3: "Chuyển đổi video YouTube sang MP3 chất lượng cao nhất.",
+                aTitle: "Hướng dẫn tải video tại SnapTik",
+                s1: "Sao chép liên kết video từ ứng dụng TikTok hoặc YouTube.",
+                s2: "Dán liên kết vào ô nhập liệu ở phía trên.",
+                s3: "Nhấn nút 'Tải xuống', chờ 5 giây và lưu file."
+            },
+            en: {
+                lang: "English", home: "Home", tk: "TikTok", dy: "Douyin", yt: "YouTube MP3",
+                hTitle: "Best Multi-Downloader", hSub: "Download TikTok, Douyin, YouTube No Watermark & MP3",
+                placeholder: "Paste link here...", btnAnlz: "DOWNLOAD",
+                vBtn: "<i class='fa-solid fa-video mr-2'></i>DOWNLOAD MP4", aBtn: "<i class='fa-solid fa-music mr-2'></i>DOWNLOAD MP3",
+                wait: "WAIT",
+                seoTitle: "SnapTik Pro - #1 Video Downloader",
+                seoT1: "High Speed", seoD1: "Optimized servers help you download videos in seconds with HD quality.",
+                seoT2: "Auto Remove Logo", seoD2: "Automatically remove all watermarks and IDs from TikTok/Douyin.",
+                seoT3: "320kbps MP3", seoD3: "Convert YouTube videos to the highest quality MP3 format.",
+                aTitle: "How to use SnapTik",
+                s1: "Copy the video link from TikTok or YouTube app.",
+                s2: "Paste the link into the input box above.",
+                s3: "Click 'Download', wait 5 seconds and save the file."
+            }
+        };
+
+        function setLanguage(lang) {
+            localStorage.setItem('lang', lang);
+            const d = langData[lang];
+            document.getElementById('langText').innerText = d.lang;
+            document.getElementById('heroTitle').innerText = d.hTitle;
+            document.getElementById('heroSub').innerText = d.hSub;
+            document.getElementById('urlInput').placeholder = d.placeholder;
+            document.getElementById('btnAnalyze').innerText = d.btnAnlz;
+            
+            // Cập nhật SEO content
+            document.getElementById('seoMainTitle').innerText = d.seoTitle;
+            document.getElementById('seoT1').innerText = d.seoT1; document.getElementById('seoD1').innerText = d.seoD1;
+            document.getElementById('seoT2').innerText = d.seoT2; document.getElementById('seoD2').innerText = d.seoD2;
+            document.getElementById('seoT3').innerText = d.seoT3; document.getElementById('seoD3').innerText = d.seoD3;
+            document.getElementById('seoArticleTitle').innerText = d.aTitle;
+            document.getElementById('step1').innerText = d.s1;
+            document.getElementById('step2').innerText = d.s2;
+            document.getElementById('step3').innerText = d.s3;
+
+            const items = document.querySelectorAll('.nav-item');
+            items[0].innerText = d.home; items[1].innerText = d.tk; items[2].innerText = d.dy; items[3].innerText = d.yt;
+        }
+
+        window.onload = () => setLanguage(localStorage.getItem('lang') || 'vi');
+
+        function focusInput() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('urlInput').focus();
+        }
+
+        async function analyzeVideo() {
+            const url = document.getElementById('urlInput').value;
+            if(!url) return;
+            const btn = document.getElementById('btnAnalyze');
+            btn.innerText = "...";
+            try {
+                const res = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({url})
+                });
+                const data = await res.json();
+                currentData = { video: data.video_url, audio: data.music_url, title: data.title };
+                document.getElementById('vThumb').src = data.thumbnail || 'https://via.placeholder.com/150';
+                document.getElementById('vTitle').innerText = data.title;
+                document.getElementById('resultArea').classList.remove('hidden');
+                document.getElementById('resultArea').scrollIntoView({behavior: 'smooth'});
+            } catch (e) { alert("Link không hỗ trợ!"); }
+            btn.innerText = langData[localStorage.getItem('lang') || 'vi'].btnAnlz;
+        }
+
+        function startDownload(type) {
+            window.open(shopeeLink, '_blank');
+            document.getElementById('timerNote').classList.remove('hidden');
+            let time = 5;
+            const lang = localStorage.getItem('lang') || 'vi';
+            const btnId = type === 'video' ? 'videoBtnText' : 'audioBtnText';
+            const timer = setInterval(() => {
+                document.getElementById(btnId).innerText = `${langData[lang].wait} ${time}S...`;
+                time--;
+                if(time < 0) {
+                    clearInterval(timer);
+                    document.getElementById(btnId).innerHTML = (type === 'video' ? langData[lang].vBtn : langData[lang].aBtn);
+                    const finalUrl = type === 'video' ? currentData.video : currentData.audio;
+                    window.location.href = `/download_file?url=${encodeURIComponent(finalUrl)}&name=${encodeURIComponent(currentData.title.substring(0,10))}.${type === 'video' ? 'mp4' : 'mp3'}`;
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
