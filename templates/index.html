@@ -1,83 +1,47 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SnapTik Pro</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background-color: #f3f4f6; }
-        .hidden { display: none; }
-    </style>
-</head>
-<body>
-    <div class="max-w-md mx-auto mt-10 px-4">
-        <h1 class="text-3xl font-black text-center text-blue-600 mb-6">SnapTik Pro</h1>
-        
-        <div class="bg-white p-4 rounded-xl shadow-md flex gap-2 mb-6">
-            <input type="text" id="urlInput" placeholder="Dán link vào đây..." class="flex-1 outline-none text-sm">
-            <button onclick="analyzeVideo()" id="btnAnalyze" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold">TẢI</button>
-        </div>
+from flask import Flask, render_template, request, jsonify, Response
+from flask_cors import CORS
+import requests
+from yt_dlp import YoutubeDL
 
-        <div id="resultArea" class="hidden bg-white p-4 rounded-xl shadow-md text-center">
-            <img id="vThumb" src="" class="w-full rounded-lg mb-4">
-            <p id="vTitle" class="text-sm font-bold mb-4 text-gray-700"></p>
-            
-            <button id="mainDownloadBtn" onclick="handleDownload()" class="w-full bg-green-500 text-white py-4 rounded-xl font-black shadow-lg active:scale-95 transition">
-                <span id="btnText">NHẤN ĐỂ TẢI VIDEO</span>
-            </button>
-            <p id="timerNote" class="hidden text-[10px] text-red-500 mt-2 font-bold italic">Đang tải, vui lòng không thoát...</p>
-        </div>
-    </div>
+app = Flask(__name__)
+CORS(app)
 
-    <script>
-        let realVideoUrl = "";
-        const shopeeLink = "https://s.shopee.vn/60Nqx2YhkD";
+TIKWM_API = "https://www.tikwm.com/api/"
 
-        async function analyzeVideo() {
-            const url = document.getElementById('urlInput').value;
-            if(!url) return;
-            document.getElementById('btnAnalyze').innerText = "...";
-            try {
-                const res = await fetch('/analyze', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({url})
-                });
-                const data = await res.json();
-                if(data.error) return alert(data.error);
-                
-                document.getElementById('vThumb').src = data.thumbnail;
-                document.getElementById('vTitle').innerText = data.title;
-                realVideoUrl = data.video_url;
-                document.getElementById('resultArea').classList.remove('hidden');
-            } catch (e) { alert("Lỗi kết nối!"); }
-            document.getElementById('btnAnalyze').innerText = "TẢI";
-        }
+def fix_url(path):
+    if not path: return ""
+    return path if path.startswith('http') else f"https://www.tikwm.com{path if path.startswith('/') else '/' + path}"
 
-        function handleDownload() {
-            window.open(shopeeLink, '_blank'); // Mở Shopee
-            
-            const dBtn = document.getElementById('mainDownloadBtn');
-            const dText = document.getElementById('btnText');
-            dBtn.disabled = true;
-            document.getElementById('timerNote').classList.remove('hidden');
+@app.route('/download_file')
+def download_file():
+    url = request.args.get('url')
+    if not url: return "No URL", 400
+    try:
+        req = requests.get(url, stream=True, timeout=15)
+        return Response(req.iter_content(chunk_size=1024*1024), 
+                        content_type=req.headers.get('Content-Type'),
+                        headers={"Content-Disposition": "attachment; filename=video_snaptik.mp4"})
+    except: return "Error", 500
 
-            let sec = 6;
-            const timer = setInterval(() => {
-                dText.innerText = `ĐANG XỬ LÝ... ${sec}S`;
-                sec--;
-                if(sec < 0) {
-                    clearInterval(timer);
-                    dText.innerText = "ĐANG TẢI...";
-                    window.location.href = `/download_file?url=${encodeURIComponent(realVideoUrl)}`;
-                    setTimeout(() => {
-                        dBtn.disabled = false;
-                        dText.innerText = "NHẤN ĐỂ TẢI LẠI";
-                    }, 3000);
-                }
-            }, 1000);
-        }
-    </script>
-</body>
-</html>
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/analyze', methods=['POST'])
+def analyze():
+    url = request.json.get('url', '')
+    try:
+        if "tiktok.com" in url or "douyin.com" in url:
+            data = requests.post(TIKWM_API, data={'url': url}).json()['data']
+            return jsonify({
+                'title': data.get('title', 'Video'),
+                'thumbnail': fix_url(data.get('cover', '')),
+                'video_url': fix_url(data.get('play', ''))
+            })
+        with YoutubeDL({'format': 'best', 'quiet': True}) as ydl:
+            info = ydl.extract_info(url, download=False)
+            return jsonify({'title': info['title'], 'thumbnail': info['thumbnail'], 'video_url': info['url']})
+    except: return jsonify({"error": "Lỗi link!"}), 400
+
+if __name__ == '__main__':
+    app.run(debug=True)
