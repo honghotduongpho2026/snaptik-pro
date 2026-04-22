@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SnapTik - Tải Video TikTok Không Logo, Douyin & YouTube MP3</title>
-    <meta name="description" content="SnapTik hỗ trợ tải video TikTok không logo, Douyin, YouTube 4K và chuyển đổi MP3 chất lượng cao 320kbps miễn phí.">
+    <meta name="description" content="SnapTik hỗ trợ tải video TikTok không logo chất lượng HD, YouTube 4K và chuyển đổi MP3 320kbps miễn phí.">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,7 +14,7 @@
         .hero-gradient { background: linear-gradient(90deg, #9333ea 0%, #db2777 100%); }
         .btn-main { background-color: #db2777; transition: 0.3s; }
         .btn-main:hover { background-color: #be185d; }
-        .dropdown-content { display: none; position: absolute; right: 0; top: 100%; z-index: 1000; }
+        .dropdown-content { display: none; position: absolute; right: 0; top: 100%; z-index: 1000; background: white; border: 1px solid #eee; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
         .group:hover .dropdown-content { display: block; }
     </style>
 </head>
@@ -23,17 +23,17 @@
     <nav class="bg-white border-b px-6 py-4 flex justify-between items-center shadow-sm sticky top-0 z-50">
         <h1 class="text-3xl font-black text-[#db2777] cursor-pointer" onclick="location.href='/'">SNAPTIK</h1>
         <div class="hidden md:flex gap-6 font-medium text-gray-600 text-sm">
-            <a href="/" class="hover:text-pink-600 nav-item" data-key="home">Trang chủ</a>
-            <a href="javascript:void(0)" onclick="switchTab('tk')" class="hover:text-pink-600 nav-item">Tải TikTok</a>
-            <a href="javascript:void(0)" onclick="switchTab('dy')" class="hover:text-pink-600 nav-item">Tải Douyin</a>
-            <a href="javascript:void(0)" onclick="switchTab('yt')" class="hover:text-pink-600 nav-item">YouTube MP3</a>
+            <a href="/" class="hover:text-pink-600 nav-item" id="navHome">Trang chủ</a>
+            <a href="javascript:void(0)" onclick="switchTab('tk')" class="hover:text-pink-600 nav-item" id="navTk">Tải TikTok</a>
+            <a href="javascript:void(0)" onclick="switchTab('dy')" class="hover:text-pink-600 nav-item" id="navDy">Tải Douyin</a>
+            <a href="javascript:void(0)" onclick="switchTab('yt')" class="hover:text-pink-600 nav-item" id="navYt">YouTube MP3</a>
         </div>
         
         <div class="relative group">
-            <button class="flex items-center gap-2 text-gray-700 font-bold text-sm border px-3 py-1 rounded-full hover:bg-gray-50">
+            <button class="flex items-center gap-2 text-gray-700 font-bold text-sm border px-4 py-2 rounded-full hover:bg-gray-50">
                 <i class="fa-solid fa-globe text-blue-500"></i> <span id="langText">Tiếng Việt</span> <i class="fa-solid fa-chevron-down text-[10px]"></i>
             </button>
-            <div class="dropdown-content w-36 bg-white border rounded shadow-xl overflow-hidden">
+            <div class="dropdown-content w-36 overflow-hidden">
                 <button onclick="setLanguage('vi')" class="w-full text-left px-4 py-3 text-sm hover:bg-pink-50 border-b">Tiếng Việt</button>
                 <button onclick="setLanguage('en')" class="w-full text-left px-4 py-3 text-sm hover:bg-pink-50">English</button>
             </div>
@@ -61,14 +61,14 @@
         <img id="vThumb" src="" class="w-48 mx-auto rounded-xl mb-6 shadow-md border-4 border-white">
         <h3 id="vTitle" class="font-bold text-gray-800 mb-8 px-4 text-lg"></h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <button id="btnDlVideo" onclick="handleDownload('video')" class="bg-[#db2777] text-white py-4 rounded-xl font-bold shadow-lg hover:bg-pink-700">
-                <i class="fa-solid fa-video mr-2"></i>TẢI VIDEO MP4
+            <button onclick="handleDownload('video')" class="bg-[#db2777] text-white py-4 rounded-xl font-bold shadow-lg hover:bg-pink-700">
+                <span id="vBtnText"><i class="fa-solid fa-video mr-2"></i>TẢI VIDEO MP4</span>
             </button>
-            <button id="btnDlAudio" onclick="handleDownload('mp3')" class="bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg hover:bg-blue-700">
-                <i class="fa-solid fa-music mr-2"></i>TẢI NHẠC MP3
+            <button onclick="handleDownload('mp3')" class="bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg hover:bg-blue-700">
+                <span id="aBtnText"><i class="fa-solid fa-music mr-2"></i>TẢI NHẠC MP3</span>
             </button>
         </div>
-        <p id="timerNote" class="hidden text-xs text-orange-600 mt-6 font-bold italic animate-pulse">Đang chuẩn bị file, vui lòng chờ...</p>
+        <p id="timerNote" class="hidden text-xs text-orange-600 mt-6 font-bold italic animate-pulse">Hệ thống đang lấy chất lượng cao nhất, vui lòng đợi...</p>
     </div>
 
     <main class="max-w-5xl mx-auto px-6 py-16">
@@ -80,17 +80,17 @@
             <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
                 <i class="fa-solid fa-bolt text-4xl text-pink-600 mb-6"></i>
                 <h4 class="font-bold text-xl mb-4" id="seoT1">Tốc độ cực nhanh</h4>
-                <p class="text-sm text-gray-600 leading-relaxed" id="seoD1">Hệ thống máy chủ tối ưu giúp bạn tải video TikTok, YouTube chỉ trong vài giây.</p>
+                <p class="text-sm text-gray-600 leading-relaxed" id="seoD1">Hệ thống máy chủ tối ưu giúp bạn tải video chỉ trong vài giây với chất lượng cao nhất.</p>
             </div>
             <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
                 <i class="fa-solid fa-wand-magic-sparkles text-4xl text-pink-600 mb-6"></i>
                 <h4 class="font-bold text-xl mb-4" id="seoT2">Xóa Logo tự động</h4>
-                <p class="text-sm text-gray-600 leading-relaxed" id="seoD2">Tự động loại bỏ hoàn toàn logo và watermark trên video TikTok và Douyin.</p>
+                <p class="text-sm text-gray-600 leading-relaxed" id="seoD2">Loại bỏ hoàn toàn logo, watermark trên TikTok và Douyin tự động bằng AI.</p>
             </div>
             <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
                 <i class="fa-solid fa-music text-4xl text-pink-600 mb-6"></i>
-                <h4 class="font-bold text-xl mb-4" id="seoT3">Chất lượng MP3 320kbps</h4>
-                <p class="text-sm text-gray-600 leading-relaxed" id="seoD3">Chuyển đổi video YouTube sang định dạng MP3 chất lượng cao nhất.</p>
+                <h4 class="font-bold text-xl mb-4" id="seoT3">Nhạc MP3 320kbps</h4>
+                <p class="text-sm text-gray-600 leading-relaxed" id="seoD3">Trích xuất âm thanh từ YouTube với định dạng MP3 chất lượng phòng thu.</p>
             </div>
         </div>
     </main>
@@ -101,27 +101,52 @@
 
     <script>
         let currentData = { video: "", audio: "", title: "" };
-        const shopeeLink = "https://s.shopee.vn/60Nqx2YhkD";
-
-        // FIX 1: Hàm chuyển Tab (TikTok/YouTube)
-        function switchTab(type) {
-            const input = document.getElementById('urlInput');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            input.focus();
-            if(type === 'tk') input.placeholder = "Dán link TikTok vào đây...";
-            if(type === 'dy') input.placeholder = "Dán link Douyin vào đây...";
-            if(type === 'yt') input.placeholder = "Dán link YouTube để lấy MP3...";
-        }
+        const shopeeLink = "https://s.shopee.vn/60Nqx2YhkD"; // Link AF của bạn
 
         const langData = {
-            vi: { lang: "Tiếng Việt", wait: "CHỜ", dl: "TẢI XUỐNG" },
-            en: { lang: "English", wait: "WAIT", dl: "DOWNLOAD" }
+            vi: {
+                lang: "Tiếng Việt", home: "Trang chủ", tk: "Tải TikTok", dy: "Tải Douyin", yt: "YouTube MP3",
+                hTitle: "Trình tải Video đa năng tốt nhất", hSub: "Tải TikTok, Douyin, YouTube không watermark & MP3 320kbps",
+                placeholder: "Dán link video TikTok, Douyin hoặc YouTube...", btnAnlz: "TẢI XUỐNG",
+                vBtn: "<i class='fa-solid fa-video mr-2'></i>TẢI VIDEO MP4", aBtn: "<i class='fa-solid fa-music mr-2'></i>TẢI NHẠC MP3",
+                wait: "ĐANG XỬ LÝ", seoTitle: "SnapTik Pro - Công cụ tải video số 1"
+            },
+            en: {
+                lang: "English", home: "Home", tk: "TikTok", dy: "Douyin", yt: "YouTube MP3",
+                hTitle: "Best Video Downloader", hSub: "Download TikTok, Douyin, YouTube No Watermark & 320kbps MP3",
+                placeholder: "Paste video link here...", btnAnlz: "DOWNLOAD",
+                vBtn: "<i class='fa-solid fa-video mr-2'></i>DOWNLOAD MP4", aBtn: "<i class='fa-solid fa-music mr-2'></i>DOWNLOAD MP3",
+                wait: "PROCESSING", seoTitle: "SnapTik Pro - #1 Video Downloader"
+            }
         };
 
         function setLanguage(lang) {
             localStorage.setItem('lang', lang);
-            document.getElementById('langText').innerText = langData[lang].lang;
-            location.reload(); // Reload để cập nhật toàn bộ text SEO
+            const d = langData[lang];
+            document.getElementById('langText').innerText = d.lang;
+            document.getElementById('navHome').innerText = d.home;
+            document.getElementById('navTk').innerText = d.tk;
+            document.getElementById('navDy').innerText = d.dy;
+            document.getElementById('navYt').innerText = d.yt;
+            document.getElementById('heroTitle').innerText = d.hTitle;
+            document.getElementById('heroSub').innerText = d.hSub;
+            document.getElementById('urlInput').placeholder = d.placeholder;
+            document.getElementById('btnAnalyze').innerText = d.btnAnlz;
+            document.getElementById('seoMainTitle').innerText = d.seoTitle;
+            if(!document.getElementById('resultArea').classList.contains('hidden')){
+                document.getElementById('vBtnText').innerHTML = d.vBtn;
+                document.getElementById('aBtnText').innerHTML = d.aBtn;
+            }
+        }
+
+        window.onload = () => setLanguage(localStorage.getItem('lang') || 'vi');
+
+        function switchTab(type) {
+            const input = document.getElementById('urlInput');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            input.focus();
+            const d = langData[localStorage.getItem('lang') || 'vi'];
+            input.placeholder = d[type] + "...";
         }
 
         async function analyzeVideo() {
@@ -141,32 +166,39 @@
                 document.getElementById('vTitle').innerText = data.title;
                 document.getElementById('resultArea').classList.remove('hidden');
                 document.getElementById('resultArea').scrollIntoView({behavior: 'smooth'});
-            } catch (e) { alert("Lỗi phân tích link!"); }
-            btn.innerText = langData[localStorage.getItem('lang') || 'vi'].dl;
+            } catch (e) { alert("Lỗi phân tích video!"); }
+            btn.innerText = langData[localStorage.getItem('lang') || 'vi'].btnAnlz;
         }
 
-        // FIX 2: Hàm tải file trực tiếp (Tránh lỗi 502)
+        // HÀM TẢI XUỐNG + DẪN HƯỚNG AF
         function handleDownload(type) {
-            window.open(shopeeLink, '_blank'); // Mở quảng cáo
-            document.getElementById('timerNote').classList.remove('hidden');
+            // 1. Mở link Affiliate Shopee ngay lập tức
+            window.open(shopeeLink, '_blank');
             
-            const btn = type === 'video' ? document.getElementById('btnDlVideo') : document.getElementById('btnDlAudio');
-            const originalText = btn.innerHTML;
+            document.getElementById('timerNote').classList.remove('hidden');
+            const btnTextId = type === 'video' ? 'vBtnText' : 'aBtnText';
+            const originalHTML = document.getElementById(btnTextId).innerHTML;
             let time = 5;
 
             const timer = setInterval(() => {
-                btn.innerText = `${langData[localStorage.getItem('lang') || 'vi'].wait} ${time}S...`;
+                const lang = localStorage.getItem('lang') || 'vi';
+                document.getElementById(btnTextId).innerText = `${langData[lang].wait} ${time}S...`;
                 time--;
-                if(time < 0) {
+
+                if (time < 0) {
                     clearInterval(timer);
-                    btn.innerHTML = originalText;
-                    const link = document.createElement('a');
-                    link.href = type === 'video' ? currentData.video : currentData.audio;
-                    link.setAttribute('download', ''); // Ép tải xuống
-                    link.target = '_blank';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
+                    document.getElementById(btnTextId).innerHTML = originalHTML;
+                    document.getElementById('timerNote').classList.add('hidden');
+
+                    // 2. Ép trình duyệt tự động tải xuống file chất lượng nhất
+                    const fileUrl = type === 'video' ? currentData.video : currentData.audio;
+                    const dlLink = document.createElement('a');
+                    dlLink.href = fileUrl;
+                    dlLink.target = '_self'; // Tránh bị chặn popup lần 2
+                    dlLink.setAttribute('download', ''); 
+                    document.body.appendChild(dlLink);
+                    dlLink.click();
+                    document.body.removeChild(dlLink);
                 }
             }, 1000);
         }
