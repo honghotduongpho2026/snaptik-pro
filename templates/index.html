@@ -15,6 +15,9 @@
         .hero-gradient { background: linear-gradient(90deg, #9333ea 0%, #db2777 100%); }
         .btn-main { background-color: #db2777; transition: 0.3s; }
         .btn-main:hover { background-color: #be185d; }
+        /* Fix lỗi menu ngôn ngữ không bấm được trên mobile */
+        .dropdown-content { display: none; position: absolute; right: 0; top: 100%; z-index: 999; }
+        .group:hover .dropdown-content { display: block; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -32,7 +35,7 @@
             <button class="flex items-center gap-2 text-gray-700 font-bold text-sm border px-3 py-1 rounded-full hover:bg-gray-50 transition">
                 <i class="fa-solid fa-globe text-blue-500"></i> <span id="langText">Tiếng Việt</span> <i class="fa-solid fa-chevron-down text-[10px]"></i>
             </button>
-            <div class="absolute right-0 mt-2 w-36 bg-white border rounded shadow-xl hidden group-hover:block overflow-hidden z-[100]">
+            <div class="dropdown-content w-36 bg-white border rounded shadow-xl overflow-hidden">
                 <button onclick="setLanguage('vi')" class="w-full text-left px-4 py-3 text-sm hover:bg-pink-50 border-b">Tiếng Việt</button>
                 <button onclick="setLanguage('en')" class="w-full text-left px-4 py-3 text-sm hover:bg-pink-50">English</button>
             </div>
@@ -157,6 +160,7 @@
             }
         };
 
+        // Hàm đổi ngôn ngữ (Giữ SEO content)
         function setLanguage(lang) {
             localStorage.setItem('lang', lang);
             const d = langData[lang];
@@ -166,7 +170,6 @@
             document.getElementById('urlInput').placeholder = d.placeholder;
             document.getElementById('btnAnalyze').innerText = d.btnAnlz;
             
-            // Cập nhật SEO content
             document.getElementById('seoMainTitle').innerText = d.seoTitle;
             document.getElementById('seoT1').innerText = d.seoT1; document.getElementById('seoD1').innerText = d.seoD1;
             document.getElementById('seoT2').innerText = d.seoT2; document.getElementById('seoD2').innerText = d.seoD2;
@@ -178,6 +181,10 @@
 
             const items = document.querySelectorAll('.nav-item');
             items[0].innerText = d.home; items[1].innerText = d.tk; items[2].innerText = d.dy; items[3].innerText = d.yt;
+            
+            // Tự đóng menu khi chọn xong
+            document.querySelector('.dropdown-content').style.display = 'none';
+            setTimeout(() => document.querySelector('.dropdown-content').style.removeProperty('display'), 500);
         }
 
         window.onload = () => setLanguage(localStorage.getItem('lang') || 'vi');
@@ -187,6 +194,7 @@
             document.getElementById('urlInput').focus();
         }
 
+        // FIX LỖI NHẬN DIỆN ẢNH VÀ VIDEO
         async function analyzeVideo() {
             const url = document.getElementById('urlInput').value;
             if(!url) return;
@@ -199,28 +207,34 @@
                     body: JSON.stringify({url})
                 });
                 const data = await res.json();
+                if(data.error) throw new Error();
+                
                 currentData = { video: data.video_url, audio: data.music_url, title: data.title };
                 document.getElementById('vThumb').src = data.thumbnail || 'https://via.placeholder.com/150';
                 document.getElementById('vTitle').innerText = data.title;
                 document.getElementById('resultArea').classList.remove('hidden');
                 document.getElementById('resultArea').scrollIntoView({behavior: 'smooth'});
-            } catch (e) { alert("Link không hỗ trợ!"); }
+            } catch (e) { alert("Link không hỗ trợ hoặc lỗi hệ thống!"); }
             btn.innerText = langData[localStorage.getItem('lang') || 'vi'].btnAnlz;
         }
 
+        // FIX LỖI TỰ ĐỘNG TẢI FILE
         function startDownload(type) {
             window.open(shopeeLink, '_blank');
             document.getElementById('timerNote').classList.remove('hidden');
             let time = 5;
             const lang = localStorage.getItem('lang') || 'vi';
             const btnId = type === 'video' ? 'videoBtnText' : 'audioBtnText';
+            const originalHTML = document.getElementById(btnId).innerHTML;
+
             const timer = setInterval(() => {
                 document.getElementById(btnId).innerText = `${langData[lang].wait} ${time}S...`;
                 time--;
                 if(time < 0) {
                     clearInterval(timer);
-                    document.getElementById(btnId).innerHTML = (type === 'video' ? langData[lang].vBtn : langData[lang].aBtn);
+                    document.getElementById(btnId).innerHTML = originalHTML;
                     const finalUrl = type === 'video' ? currentData.video : currentData.audio;
+                    // Tải xuống tự động qua route server để không bị chặn
                     window.location.href = `/download_file?url=${encodeURIComponent(finalUrl)}&name=${encodeURIComponent(currentData.title.substring(0,10))}.${type === 'video' ? 'mp4' : 'mp3'}`;
                 }
             }, 1000);
