@@ -3,75 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SnapTik Pro - Tải Video TikTok Không Logo & YouTube 4K</title>
-    <meta name="description" content="Công cụ tải video TikTok không logo, tải video YouTube chất lượng cao miễn phí.">
+    <title>SnapTik - Tải video TikTok không logo/watermark miễn phí</title>
+    <meta name="description" content="SnapTik là công cụ tải video TikTok không logo tốt nhất hiện nay. Hỗ trợ tải video TikTok, Facebook, YouTube chất lượng cao, hoàn toàn miễn phí.">
+    <meta name="keywords" content="snaptik, tải video tiktok, tiktok downloader, không logo, watermark">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
-        .hero-bg { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+        body { font-family: 'Roboto', sans-serif; background-color: #ffffff; }
+        .nav-link { color: #4b5563; font-weight: 500; font-size: 14px; transition: 0.3s; }
+        .nav-link:hover { color: #db2777; }
+        .hero-section { background: linear-gradient(90deg, #9333ea 0%, #db2777 100%); }
+        .input-box { border-radius: 4px 0 0 4px; }
+        .btn-download { border-radius: 0 4px 4px 0; background-color: #db2777; transition: 0.3s; }
+        .btn-download:hover { background-color: #be185d; }
+        .footer-link { color: #6b7280; font-size: 13px; }
     </style>
 </head>
 <body>
-    <div class="hero-bg text-white pt-16 pb-24 px-4 text-center">
-        <h1 class="text-4xl md:text-5xl font-black mb-4">SnapTik <span class="text-yellow-400">Pro</span></h1>
-        <p class="text-blue-100 mb-8 opacity-90">Tải video đa nền tảng không dính Watermark</p>
-        
-        <div class="max-w-2xl mx-auto bg-white p-2 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-2">
-            <input type="text" id="urlInput" placeholder="Dán liên kết TikTok hoặc YouTube..." 
-                   class="flex-1 p-4 rounded-xl text-gray-800 outline-none">
-            <button onclick="analyzeVideo()" id="btnAnalyze" 
-                    class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-xl font-bold transition-all active:scale-95">
-                TẢI XUỐNG
+
+    <nav class="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-12">
+            <h1 class="text-3xl font-black text-[#db2777] tracking-tighter">SNAPTIK</h1>
+            <div class="hidden md:flex gap-6">
+                <a href="#" class="nav-link">Home</a>
+                <div class="relative group">
+                    <button class="nav-link flex items-center gap-1">Mẹo TikTok <i class="fa-solid fa-chevron-down text-[10px]"></i></button>
+                </div>
+                <a href="#" class="nav-link">Tải Facebook</a>
+                <a href="#" class="nav-link">Tải YouTube</a>
+                <a href="#" class="nav-link">Nền tảng khác</a>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 text-blue-500 font-medium text-sm cursor-pointer">
+            <img src="https://flagcdn.com/w20/vn.png" class="w-5 h-3 object-cover" alt="VN">
+            Tiếng Việt <i class="fa-solid fa-chevron-down text-[10px]"></i>
+        </div>
+    </nav>
+
+    <section class="hero-section text-white text-center pt-16 pb-12 px-4">
+        <h2 class="text-3xl md:text-5xl font-black mb-4">Snaptik – Tải video Tiktok không watermark</h2>
+        <p class="text-lg opacity-90 mb-10">SnapTik - Web tải video Tiktok tốt nhất trên thế giới</p>
+
+        <div class="max-w-4xl mx-auto flex h-14 shadow-2xl">
+            <input type="text" id="urlInput" placeholder="Dán link TikTok vào đây..." 
+                   class="flex-1 px-6 text-gray-800 outline-none input-box text-sm md:text-base">
+            <button onclick="analyzeVideo()" id="btnAnalyze" class="btn-download px-10 font-black text-sm md:text-base uppercase">
+                Tải xuống
             </button>
+        </div>
+
+        <div class="mt-16 flex justify-center gap-4">
+            <img src="https://static.snaptik.app/images/app_download_vi.png" class="w-full max-w-2xl" alt="Preview">
+        </div>
+    </section>
+
+    <div id="resultArea" class="hidden max-w-3xl mx-auto my-12 p-6 bg-gray-50 rounded-xl border border-dashed border-pink-300 text-center">
+        <img id="vThumb" src="" class="w-48 mx-auto rounded-lg mb-4 shadow-lg border-2 border-white">
+        <h3 id="vTitle" class="font-bold text-gray-700 mb-6 px-4 truncate"></h3>
+        
+        <div class="max-w-xs mx-auto">
+            <button id="mainDownloadBtn" onclick="handleDownload()" 
+                    class="w-full bg-[#db2777] hover:bg-[#be185d] text-white py-4 rounded font-bold text-lg transition-all shadow-lg active:scale-95">
+                <span id="btnText">DOWNLOAD VIDEO</span>
+            </button>
+            <p id="timerNote" class="hidden text-xs text-red-500 mt-4 font-bold italic animate-pulse">
+                Hệ thống đang nén video, vui lòng không đóng trình duyệt...
+            </p>
         </div>
     </div>
 
-    <main class="max-w-4xl mx-auto -mt-12 px-4 pb-20">
-        <div id="resultArea" class="hidden bg-white rounded-3xl shadow-xl p-6 mb-10 border border-gray-100 text-center">
-            <img id="vThumb" src="" class="w-full max-w-sm mx-auto rounded-2xl mb-4 shadow-lg">
-            <h3 id="vTitle" class="font-bold text-gray-800 mb-6 px-4"></h3>
-            
-            <div class="max-w-xs mx-auto">
-                <button id="mainDownloadBtn" onclick="handleDownload()" 
-                        class="w-full bg-green-500 hover:bg-green-600 text-white py-5 rounded-2xl font-black text-lg shadow-xl">
-                    <span id="btnText">NHẤN ĐỂ TẢI NGAY</span>
-                </button>
-                <p id="timerNote" class="hidden text-[11px] text-red-500 mt-3 font-bold italic animate-pulse">
-                    Đang chuẩn bị file tải xuống, vui lòng chờ...
-                </p>
+    <main class="max-w-4xl mx-auto px-6 py-16 text-gray-600 leading-relaxed">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Cách tải video TikTok không logo với SnapTik</h2>
+        <p class="mb-4 text-sm md:text-base">SnapTik.app là một trong những trình tải video TikTok tốt nhất hiện nay để tải video TikTok không có logo. Bạn không cần phải cài đặt bất kỳ phần mềm nào trên máy tính hoặc điện thoại di động, tất cả những gì bạn cần là một liên kết video TikTok và quá trình xử lý được thực hiện ở phía máy chủ của chúng tôi.</p>
+        
+        <div class="grid md:grid-cols-3 gap-8 mt-12">
+            <div>
+                <h4 class="font-bold text-gray-800 mb-2">Tải video TikTok HD</h4>
+                <p class="text-sm">Hỗ trợ tải xuống video với chất lượng gốc, định dạng MP4 rõ nét.</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-gray-800 mb-2">Không Watermark</h4>
+                <p class="text-sm">Xóa hoàn toàn logo và ID người dùng dính trên video một cách sạch sẽ.</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-gray-800 mb-2">Hỗ trợ mọi thiết bị</h4>
+                <p class="text-sm">Sử dụng mượt mà trên iPhone, Android, PC và máy tính bảng.</p>
             </div>
         </div>
-
-        <section class="grid md:grid-cols-2 gap-8 mb-12">
-            <div class="bg-white p-6 rounded-2xl shadow-sm">
-                <h4 class="font-bold text-blue-600 mb-2"><i class="fa-solid fa-check-double mr-2"></i>Không Logo</h4>
-                <p class="text-gray-500 text-sm">Công cụ tự động loại bỏ ID và Logo TikTok giúp video sạch hoàn toàn.</p>
-            </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm">
-                <h4 class="font-bold text-blue-600 mb-2"><i class="fa-solid fa-bolt mr-2"></i>Tốc độ cực nhanh</h4>
-                <p class="text-gray-500 text-sm">Hỗ trợ máy chủ tải tệp tốc độ cao cho cả mobile và máy tính.</p>
-            </div>
-        </section>
-
-        <section class="bg-white rounded-3xl p-8 shadow-sm">
-            <h2 class="text-2xl font-bold mb-6 text-gray-800">Câu hỏi thường gặp (FAQ)</h2>
-            <div class="space-y-6">
-                <div class="border-b pb-4">
-                    <p class="font-bold text-gray-700">Làm sao để tải video về điện thoại?</p>
-                    <p class="text-gray-500 text-sm">Chỉ cần dán link và đợi 6 giây, hệ thống sẽ tự động kích hoạt trình tải về của máy.</p>
-                </div>
-                <div class="border-b pb-4">
-                    <p class="font-bold text-gray-700">Web có thu phí không?</p>
-                    <p class="text-gray-500 text-sm">Hoàn toàn miễn phí 100% cho mọi người dùng.</p>
-                </div>
-            </div>
-        </section>
     </main>
 
-    <footer class="text-center py-10 text-gray-400 text-xs">
-        <p>© 2026 SnapTik Pro - Affiliate Partner</p>
+    <footer class="bg-gray-50 border-t border-gray-100 py-10 text-center">
+        <div class="flex justify-center gap-6 mb-4">
+            <a href="#" class="footer-link">Điều khoản dịch vụ</a>
+            <a href="#" class="footer-link">Chính sách bảo mật</a>
+            <a href="#" class="footer-link">Liên hệ</a>
+        </div>
+        <p class="text-xs text-gray-400">© 2026 SnapTik Pro. All rights reserved.</p>
     </footer>
 
     <script>
@@ -80,7 +108,7 @@
 
         async function analyzeVideo() {
             const url = document.getElementById('urlInput').value;
-            if(!url) return alert("Dán link đã bạn ơi!");
+            if(!url) return alert("Vui lòng dán link video!");
             const btn = document.getElementById('btnAnalyze');
             btn.innerText = "...";
             try {
@@ -97,7 +125,7 @@
                 realVideoUrl = data.video_url;
                 document.getElementById('resultArea').classList.remove('hidden');
                 document.getElementById('resultArea').scrollIntoView({behavior: 'smooth'});
-            } catch (e) { alert(e.message); }
+            } catch (e) { alert("Link không hợp lệ hoặc lỗi máy chủ!"); }
             btn.innerText = "TẢI XUỐNG";
         }
 
@@ -108,17 +136,17 @@
             dBtn.disabled = true;
             document.getElementById('timerNote').classList.remove('hidden');
 
-            let count = 6;
+            let count = 5;
             const timer = setInterval(() => {
-                dText.innerText = `ĐANG XỬ LÝ... ${count}S`;
+                dText.innerText = `READY IN ${count}S...`;
                 count--;
                 if(count < 0) {
                     clearInterval(timer);
-                    dText.innerText = "ĐANG TẢI XUỐNG...";
+                    dText.innerText = "STARTING DOWNLOAD...";
                     window.location.href = `/download_file?url=${encodeURIComponent(realVideoUrl)}`;
                     setTimeout(() => {
                         dBtn.disabled = false;
-                        dText.innerText = "NHẤN ĐỂ TẢI LẠI";
+                        dText.innerText = "RE-DOWNLOAD";
                     }, 3000);
                 }
             }, 1000);
