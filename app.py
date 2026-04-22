@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, Response
 from flask_cors import CORS
 import requests
 from yt_dlp import YoutubeDL
@@ -9,14 +9,30 @@ CORS(app)
 TIKWM_API = "https://www.tikwm.com/api/"
 
 def fix_url(path):
-    """Hàm xử lý thông minh: Nếu link có http rồi thì giữ nguyên, nếu chưa thì mới nối domain"""
-    if not path:
-        return ""
-    if path.startswith('http'):
-        return path
-    # Đảm bảo path bắt đầu bằng / để nối chuỗi không bị lỗi
+    """Sửa lỗi dính link DNS và đảm bảo link có đầy đủ https"""
+    if not path: return ""
+    if path.startswith('http'): return path
     clean_path = path if path.startswith('/') else '/' + path
     return f"https://www.tikwm.com{clean_path}"
+
+@app.route('/download_file')
+def download_file():
+    """Hàm quan trọng: Ép trình duyệt tự động tải xuống thay vì mở trình phát"""
+    url = request.args.get('url')
+    if not url: return "Không tìm thấy liên kết", 400
+    
+    try:
+        # Tải dữ liệu từ server gốc (TikTok/Douyin)
+        req = requests.get(url, stream=True, timeout=15)
+        
+        # Gửi dữ liệu về trình duyệt kèm Header 'attachment' để kích hoạt tự động tải
+        return Response(
+            req.iter_content(chunk_size=1024*1024),
+            content_type=req.headers.get('Content-Type'),
+            headers={"Content-Disposition": "attachment; filename=video_snaptik.mp4"}
+        )
+    except Exception as e:
+        return f"Lỗi máy chủ tải file: {str(e)}", 500
 
 def get_tiktok_douyin(url):
     try:
@@ -26,20 +42,15 @@ def get_tiktok_douyin(url):
             return {
                 'title': data.get('title', 'Video TikTok'),
                 'thumbnail': fix_url(data.get('cover', '')),
-                'video_url': fix_url(data.get('play', '')), # Sửa lỗi DNS tại đây
+                'video_url': fix_url(data.get('play', '')),
                 'music_url': fix_url(data.get('music', '')),
                 'platform': 'tiktok'
             }
-    except Exception as e:
-        print(f"Lỗi TikTok: {e}")
+    except: return None
     return None
 
 def get_youtube_2k_4k(url):
-    ydl_opts = {
-        'format': 'bestvideo+bestaudio/best',
-        'quiet': True,
-        'no_warnings': True
-    }
+    ydl_opts = {'format': 'bestvideo+bestaudio/best', 'quiet': True}
     with YoutubeDL(ydl_opts) as ydl:
         try:
             info = ydl.extract_info(url, download=False)
@@ -50,8 +61,7 @@ def get_youtube_2k_4k(url):
                 'music_url': info.get('url'),
                 'platform': 'youtube'
             }
-        except:
-            return None
+        except: return None
 
 @app.route('/')
 def home():
@@ -61,8 +71,7 @@ def home():
 def analyze():
     data = request.json
     url = data.get('url', '')
-    if not url:
-        return jsonify({"error": "Vui lòng dán link!"}), 400
+    if not url: return jsonify({"error": "Vui lòng dán link!"}), 400
     
     if "tiktok.com" in url or "douyin.com" in url:
         result = get_tiktok_douyin(url)
@@ -71,7 +80,7 @@ def analyze():
     result = get_youtube_2k_4k(url)
     if result: return jsonify(result)
     
-    return jsonify({"error": "Không lấy được link video này!"}), 400
+    return jsonify({"error": "Liên kết không hỗ trợ hoặc lỗi!"}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)
