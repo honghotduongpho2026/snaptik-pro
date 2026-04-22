@@ -3,121 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SnapTik Pro - Tải Video TikTok Không Logo, YouTube 4K</title>
+    <title>SnapTik Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
-        .hero-gradient { background: radial-gradient(circle at top right, #2563eb, #1e40af); }
-        .btn-disabled { opacity: 0.6; cursor: not-allowed; pointer-events: none; }
+        body { background-color: #f3f4f6; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
+    <div class="max-w-md mx-auto mt-10 px-4">
+        <h1 class="text-3xl font-black text-center text-blue-600 mb-6">SnapTik Pro</h1>
+        
+        <div class="bg-white p-4 rounded-xl shadow-md flex gap-2 mb-6">
+            <input type="text" id="urlInput" placeholder="Dán link vào đây..." class="flex-1 outline-none text-sm">
+            <button onclick="analyzeVideo()" id="btnAnalyze" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold">TẢI</button>
+        </div>
 
-    <header class="hero-gradient text-white pt-20 pb-32 px-6 text-center">
-        <h1 class="text-5xl md:text-6xl font-extrabold mb-4 tracking-tighter">SnapTik <span class="text-blue-300">Pro</span></h1>
-        <p class="text-blue-100 mb-10 opacity-90">Tải video TikTok, YouTube 4K không logo miễn phí 100%</p>
-
-        <div class="max-w-3xl mx-auto bg-white p-2 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-2">
-            <div class="flex-1 flex items-center px-4 py-3 bg-slate-50 rounded-xl border border-slate-200">
-                <i class="fa-solid fa-link text-slate-400 mr-3"></i>
-                <input type="text" id="urlInput" placeholder="Dán liên kết video vào đây..." class="bg-transparent w-full outline-none text-slate-800 placeholder:text-slate-400">
-                <button onclick="pasteLink()" class="ml-2 p-2 hover:bg-slate-200 rounded-lg text-slate-500 transition-all">
-                    <i class="fa-regular fa-paste"></i>
-                </button>
-            </div>
-            <button onclick="analyzeVideo()" id="btnAnalyze" class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-xl font-bold transition-all shadow-lg shadow-blue-500/30 active:scale-95">
-                TẢI XUỐNG
+        <div id="resultArea" class="hidden bg-white p-4 rounded-xl shadow-md text-center">
+            <img id="vThumb" src="" class="w-full rounded-lg mb-4">
+            <p id="vTitle" class="text-sm font-bold mb-4 text-gray-700"></p>
+            
+            <button id="mainDownloadBtn" onclick="handleDownload()" class="w-full bg-green-500 text-white py-4 rounded-xl font-black shadow-lg active:scale-95 transition">
+                <span id="btnText">NHẤN ĐỂ TẢI VIDEO</span>
             </button>
+            <p id="timerNote" class="hidden text-[10px] text-red-500 mt-2 font-bold italic">Đang tải, vui lòng không thoát...</p>
         </div>
-    </header>
-
-    <main class="max-w-5xl mx-auto -mt-16 px-6 pb-20">
-        <div id="resultArea" class="hidden bg-white rounded-3xl shadow-xl overflow-hidden mb-12 border border-slate-100 p-8">
-            <div class="flex flex-col md:flex-row gap-8">
-                <img id="vThumb" src="" class="w-full md:w-64 aspect-video object-cover rounded-2xl shadow-md border border-slate-100">
-                <div class="flex-1">
-                    <h3 id="vTitle" class="text-xl font-bold text-slate-800 mb-6 leading-tight">Tiêu đề video</h3>
-                    
-                    <div class="flex flex-col gap-3">
-                        <button id="mainDownloadBtn" onclick="handleDownload()" class="w-full bg-green-600 hover:bg-green-700 text-white py-5 rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-3">
-                            <i class="fa-solid fa-cloud-arrow-down text-xl"></i>
-                            <span id="btnText">NHẤN ĐỂ TẢI VIDEO NGAY</span>
-                        </button>
-                        <p id="timerNote" class="hidden text-center text-xs text-orange-500 font-bold italic animate-pulse">
-                            Vui lòng không đóng trang, video đang được tối ưu hóa...
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <section class="grid md:grid-cols-3 gap-6 mb-20">
-            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 text-center">
-                <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
-                </div>
-                <h4 class="font-bold mb-2">Sạch 100% Logo</h4>
-                <p class="text-slate-500 text-sm">Xóa sạch watermark TikTok/Douyin tự động bằng AI.</p>
-            </div>
-            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 text-center">
-                <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl">
-                    <i class="fa-solid fa-bolt"></i>
-                </div>
-                <h4 class="font-bold mb-2">Tốc độ 4K cực nhanh</h4>
-                <p class="text-slate-500 text-sm">Hỗ trợ tải YouTube 2K, 4K chất lượng gốc cao nhất.</p>
-            </div>
-            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 text-center">
-                <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl">
-                    <i class="fa-solid fa-mobile-screen-button"></i>
-                </div>
-                <h4 class="font-bold mb-2">Dễ dàng sử dụng</h4>
-                <p class="text-slate-500 text-sm">Nút dán link nhanh giúp tải trên mobile cực tiện lợi.</p>
-            </div>
-        </section>
-
-        <section class="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-slate-100">
-            <h2 class="text-2xl font-black mb-8 flex items-center">
-                <i class="fa-solid fa-circle-question mr-3 text-blue-600"></i> Câu hỏi thường gặp
-            </h2>
-            <div class="grid gap-6">
-                <div class="border-b border-slate-100 pb-6 text-sm">
-                    <h4 class="font-bold text-slate-800 mb-2">Làm sao để tải video TikTok không logo?</h4>
-                    <p class="text-slate-500">Dán link video vào ô trên, hệ thống sẽ tự động bóc tách logo và tải về máy bạn.</p>
-                </div>
-                <div class="border-b border-slate-100 pb-6 text-sm">
-                    <h4 class="font-bold text-slate-800 mb-2">Web có hỗ trợ tải video YouTube 4K không?</h4>
-                    <p class="text-slate-500">Có, chúng tôi hỗ trợ tải độ phân giải cao nhất (2K, 4K) cho mọi video YouTube hợp lệ.</p>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="bg-slate-900 text-slate-400 py-12 px-6 text-center">
-        <p class="text-sm mb-4">SnapTik Pro Affiliate Project 2026</p>
-        <p class="text-[10px] opacity-40">Lưu ý: Chúng tôi không lưu trữ video. Mọi quyền thuộc về chủ sở hữu nội dung.</p>
-    </footer>
+    </div>
 
     <script>
         let realVideoUrl = "";
-        const shopeeLink = "https://s.shopee.vn/60Nqx2YhkD"; // <-- THAY LINK CỦA BẠN VÀO ĐÂY
-
-        async function pasteLink() {
-            try {
-                const text = await navigator.clipboard.readText();
-                document.getElementById('urlInput').value = text;
-            } catch (err) { alert("Vui lòng dán thủ công!"); }
-        }
+        const shopeeLink = "https://s.shopee.vn/60Nqx2YhkD";
 
         async function analyzeVideo() {
             const url = document.getElementById('urlInput').value;
-            const btn = document.getElementById('btnAnalyze');
-            if(!url) return alert("Vui lòng dán liên kết!");
-
-            btn.disabled = true;
-            btn.innerText = "ĐANG XỬ LÝ...";
-
+            if(!url) return;
+            document.getElementById('btnAnalyze').innerText = "...";
             try {
                 const res = await fetch('/analyze', {
                     method: 'POST',
@@ -125,50 +45,35 @@
                     body: JSON.stringify({url})
                 });
                 const data = await res.json();
-
-                if(data.error) throw new Error(data.error);
-
+                if(data.error) return alert(data.error);
+                
                 document.getElementById('vThumb').src = data.thumbnail;
                 document.getElementById('vTitle').innerText = data.title;
                 realVideoUrl = data.video_url;
-
                 document.getElementById('resultArea').classList.remove('hidden');
-                document.getElementById('resultArea').scrollIntoView({behavior: 'smooth'});
-            } catch (e) {
-                alert(e.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "TẢI XUỐNG";
-            }
+            } catch (e) { alert("Lỗi kết nối!"); }
+            document.getElementById('btnAnalyze').innerText = "TẢI";
         }
 
         function handleDownload() {
+            window.open(shopeeLink, '_blank'); // Mở Shopee
+            
             const dBtn = document.getElementById('mainDownloadBtn');
             const dText = document.getElementById('btnText');
-            
-            // 1. Mở link affiliate Shopee
-            window.open(shopeeLink, '_blank');
-            
-            // 2. Vô hiệu hóa nút và hiện đếm ngược
             dBtn.disabled = true;
-            dBtn.classList.add('btn-disabled');
             document.getElementById('timerNote').classList.remove('hidden');
 
-            let timeLeft = 6;
+            let sec = 6;
             const timer = setInterval(() => {
-                dText.innerText = `ĐANG TỐI ƯU HÓA... ${timeLeft}S`;
-                timeLeft--;
-                if(timeLeft < 0) {
+                dText.innerText = `ĐANG XỬ LÝ... ${sec}S`;
+                sec--;
+                if(sec < 0) {
                     clearInterval(timer);
-                    dText.innerText = "ĐANG TẢI VỀ MÁY...";
-                    
-                    // 3. Gọi hàm ép tải xuống từ server của bạn
+                    dText.innerText = "ĐANG TẢI...";
                     window.location.href = `/download_file?url=${encodeURIComponent(realVideoUrl)}`;
-                    
                     setTimeout(() => {
-                        dText.innerText = "NHẤN ĐỂ TẢI LẠI";
                         dBtn.disabled = false;
-                        dBtn.classList.remove('btn-disabled');
+                        dText.innerText = "NHẤN ĐỂ TẢI LẠI";
                     }, 3000);
                 }
             }, 1000);
